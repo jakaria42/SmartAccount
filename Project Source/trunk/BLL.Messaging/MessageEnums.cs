@@ -7,22 +7,27 @@
         AmountCannotBeZero,
         ContraTypeIsNotSelected,
         JVDebitOrCreditNotSelected,
-        UnknownProblemArise
+        UnknownProblemArise,
+        InvalidProject,
+        InvalidHeadForProject,
+        DebitOrCreditAmountIsInvalid,
+        VoucherBalanceIsNotZero
     }
 
     public enum SuccessMessage
     {
-        TemporaryRecordsAdded,
+        //TemporaryRecordsAdded,
         VoucherPostedSuccessfully
     }
 
     public enum WarningMessage
     {
+        NoFixedAssetParticularNameFound,
+        ZeroDepreciationProvidedForFixedAsset
     }
 
     public enum InformationMessage
     {
-        NoChequeOrBankInfo,
-        UnknownProblemArise
+        NoChequeOrBankInfo
     }
 }

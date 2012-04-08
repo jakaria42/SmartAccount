@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
-//using Model;
-using BLL;
 using BLL.LedgerManagement;
-using BLL.Model;
-using BLL.Model.Messaging;
+using BLL.Messaging;
 using BLL.Model.Schema;
 using BLL.ProjectManagement;
 using GKS.Factory;
-using System.Collections.ObjectModel;
 using BLL.Model.Repositories;
 
 namespace GKS.Model.ViewModels
@@ -464,13 +459,25 @@ namespace GKS.Model.ViewModels
                 {
                     Message latestMessage = _ledgerManager.GetLatestMessage();
                     ErrorMessage = latestMessage.MessageText;
-                    ColorCode = MessageService.GetColorCode(latestMessage.MessageType);
+                    ColorCode = MessageService.Instance.GetColorCode(latestMessage.MessageType);
                     return null;
                 }
 
                 ClearMessage();
                 _ledgerManager.LedgerEndDate = LedgerEndDate;
-                return _ledgerManager.GetLedgerBook(SelectedProject.Id, SelectedHead.Id).ToList();
+                double balance = 0;
+                return _ledgerManager.GetLedgerBook(SelectedProject.Id, SelectedHead.Id).Select(l => 
+                    new Ledger
+                        {
+                            Balance = balance += l.Debit - l.Credit,
+                            ChequeNo = l.ChequeNo,
+                            Credit = l.Credit,
+                            Date = l.Date,
+                            Debit = l.Debit,
+                            Particular = l.Particular,
+                            Remarks = l.Remarks,
+                            VoucherNo = l.VoucherNo
+                        }).ToList();
             }
         }
 
@@ -499,7 +506,7 @@ namespace GKS.Model.ViewModels
         public void ClearMessage()
         {
             Message message = new Message();
-            ColorCode = MessageService.GetColorCode(message.MessageType);
+            ColorCode = MessageService.Instance.GetColorCode(message.MessageType);
             ErrorMessage = message.MessageText;
         }
 
