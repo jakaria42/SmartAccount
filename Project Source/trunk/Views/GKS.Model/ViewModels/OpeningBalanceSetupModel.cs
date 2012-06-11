@@ -81,31 +81,17 @@ namespace GKS.Model.ViewModels
             }
         }
 
-        private string[] _openingBalanceYear;
-        public string[] OpeningBalanceYear
+        private string _openingBalanceCurrentYear;
+        public string OpeningBalanceCurrentYear
         {
             get
             {
-                return _openingBalanceYear;
+                return _openingBalanceCurrentYear;
             }
             set
             {
-                _openingBalanceYear = value;
-                NotifyPropertyChanged("OpeningBalanceYear");
-            }
-        }
-
-        private string _selectedOpeningBalanceYear;
-        public string SelectedOpeningBalanceYear
-        {
-            get
-            {
-                return _selectedOpeningBalanceYear;
-            }
-            set
-            {
-                _selectedOpeningBalanceYear = value;
-                NotifyPropertyChanged("SelectedOpeningBalanceYear");
+                _openingBalanceCurrentYear = value;
+                NotifyPropertyChanged("OpeningBalanceCurrentYear");
             }
         }
 

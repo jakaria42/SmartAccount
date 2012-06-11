@@ -129,6 +129,12 @@ namespace GKS.Model.ViewModels
             }
         }
 
+        private RelayCommand _openNewFinancialYearClicked;
+        public ICommand OpenNewFinancialYearClicked
+        {
+            get { return _openNewFinancialYearClicked ?? (_openNewFinancialYearClicked = new RelayCommand(p1 => this.InvokeOnFinish())); }
+        }
+        
         private RelayCommand _editOpeningBalanceClicked;
         public ICommand EditOpeningBalanceClicked
         {

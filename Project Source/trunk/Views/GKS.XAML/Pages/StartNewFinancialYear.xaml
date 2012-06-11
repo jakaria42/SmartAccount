@@ -5,11 +5,11 @@
         WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
     <Grid>
         <Label Content="Last Accounting Year:" Height="25" HorizontalAlignment="Left" Margin="62,28,0,0" Name="label1" VerticalAlignment="Top" />
-        <TextBox Height="21" HorizontalAlignment="Left" Margin="177,30,0,0" Name="textBoxLastFinancialYear" VerticalAlignment="Top" Width="120" 
+        <TextBox Height="21" HorizontalAlignment="Left" Margin="177,30,0,0" Name="textBoxLastFinancialYear" VerticalAlignment="Top" Width="94" 
                  Text="{Binding Path=LastFinancialYear, Mode=OneWay}" IsReadOnly="True" />
         
-        <Label Content="New Accounting Year:" Height="23" HorizontalAlignment="Left" Margin="374,28,0,0" Name="label2" VerticalAlignment="Top" />
-        <ComboBox Height="21" HorizontalAlignment="Left" Margin="489,30,0,0" Name="comboBoxNewFinancialYear" VerticalAlignment="Top" Width="120" 
+        <Label Content="New Accounting Year:" Height="23" HorizontalAlignment="Left" Margin="304,28,0,0" Name="label2" VerticalAlignment="Top" />
+        <ComboBox Height="21" HorizontalAlignment="Left" Margin="421,30,0,0" Name="comboBoxNewFinancialYear" VerticalAlignment="Top" Width="102" 
                   ItemsSource="{Binding Path=NewFinancialYear, Mode=TwoWay}" SelectedItem="{Binding Path=SelectedNewFinancialYear, Mode=TwoWay}" />
         
         <Label Content="Project:" Height="28" HorizontalAlignment="Left" Margin="90,105,0,0" Name="label3" VerticalAlignment="Top" />
@@ -46,5 +46,7 @@
                 Command="{Binding Path=EditOpeningBalanceClicked}"/>
         <TextBlock Height="33" HorizontalAlignment="Left" Margin="250,468,0,0" Name="textBlockMessage" VerticalAlignment="Top" Width="206" FontSize="11" TextWrapping="Wrap" 
                    Text="{Binding Path=ErrorMessage, Mode=OneWay}" Foreground="{Binding Path=ColorCode, Mode=OneWay}" />
+        <Button Content="Open" Height="23" HorizontalAlignment="Left" Margin="533,30,0,0" Name="buttonOpenNewFinancialYear" VerticalAlignment="Top" Width="75" 
+                Command="{Binding Path=OpenNewFinancialYearClicked}"/>
     </Grid>
 </Window>
