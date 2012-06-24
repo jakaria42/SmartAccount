@@ -6,6 +6,7 @@ using System.Windows.Input;
 using BLL.Model.Entity;
 using BLL.Model.Managers;
 using BLL.Factories;
+using BLL.Messaging;
 
 namespace GKS.Model.ViewModels
 {
@@ -13,6 +14,7 @@ namespace GKS.Model.ViewModels
     {
         private readonly IProjectManager _projectManager;
         private readonly IHeadManager _headManager;
+        private readonly IOpeningBalanceManager _openingBalanceManager;
 
         public OpeningBalanceSetupModel()
         {
@@ -20,7 +22,10 @@ namespace GKS.Model.ViewModels
             {
                 _projectManager = BLLCoreFactory.GetProjectManager();
                 _headManager = BLLCoreFactory.GetHeadManager();
-                _openingBalanceDataGrid = new List<OpeningBalanceGridRow>();
+                _openingBalanceManager = BLLCoreFactory.GetOpeningBalanceManager();
+
+                NotifyOpeningBalanceDataGrid();
+                OpeningBalanceAmount = 0;
 
                 AllProjects = _projectManager.GetProjects(false);
             }
@@ -55,6 +60,7 @@ namespace GKS.Model.ViewModels
                 NotifyPropertyChanged("SelectedProject");
                 NotifyPropertyChanged("AllHeads");
                 SelectedHead = null;
+                NotifyOpeningBalanceDataGrid();
             }
         }
 
@@ -95,26 +101,63 @@ namespace GKS.Model.ViewModels
             }
         }
 
+        private double _openingBalanceAmount;
+        public double OpeningBalanceAmount
+        {
+            get
+            {
+                return _openingBalanceAmount;
+            }
+            set
+            {
+                _openingBalanceAmount = value;
+                NotifyPropertyChanged("OpeningBalanceAmount");
+            }
+        }
+
+        private IList<OpeningBalance> _openingBalanceDataGridItems;
+        public IList<OpeningBalance> OpeningBalanceDataGridItems
+        {
+            get
+            {
+                return _openingBalanceDataGridItems;
+            }
+            set
+            {
+                _openingBalanceDataGridItems = value;
+                NotifyPropertyChanged("OpeningBalanceDataGridItems");
+                NotifyPropertyChanged("OpeningBalanceDataGrid");
+            }
+        }
+        
         private IList<OpeningBalanceGridRow> _openingBalanceDataGrid;
         public IList<OpeningBalanceGridRow> OpeningBalanceDataGrid
         {
             get
             {
-                // Temporary code.
-                OpeningBalanceGridRow gridRow = new OpeningBalanceGridRow { HeadName = "Test", CurrentYear = 0, PreviousYear = 0 };
-                _openingBalanceDataGrid.Add(gridRow);
+                if (OpeningBalanceDataGridItems == null || OpeningBalanceDataGridItems.Count == 0)
+                    return null;
 
-                return _openingBalanceDataGrid;
+                return OpeningBalanceDataGridItems.Select(ob => /*ob.FinancialYear == OpeningBalanceCurrentYear &&*/ GetOpeningBalaceDridRow(ob)).ToList();                
             }
         }
 
-        private string _errorMessage;
-        public string ErrorMessage
+        private OpeningBalanceGridRow GetOpeningBalaceDridRow(OpeningBalance openingBalance)
         {
-            get { return _errorMessage; }
+            return new OpeningBalanceGridRow
+            {
+                HeadName = openingBalance.ProjectHead.Head.Name,
+                CurrentYearBalance = openingBalance.Balance,
+            };
+        }
+
+        private string _messageText;
+        public string MessageText
+        {
+            get { return _messageText; }
             set
             {
-                _errorMessage = value;
+                _messageText = value;
                 NotifyPropertyChanged("ErrorMessage");
             }
         }
@@ -133,7 +176,7 @@ namespace GKS.Model.ViewModels
         private RelayCommand _saveButtonClicked;
         public ICommand SaveButtonClicked
         {
-            get { return _saveButtonClicked ?? (_saveButtonClicked = new RelayCommand(p1 => this.InvokeOnFinish())); }
+            get { return _saveButtonClicked ?? (_saveButtonClicked = new RelayCommand(p1 => this.SaveOpeningBalance())); }
         }
 
         private RelayCommand _oKButtonClicked;
@@ -141,12 +184,30 @@ namespace GKS.Model.ViewModels
         {
             get { return _oKButtonClicked ?? (_oKButtonClicked = new RelayCommand(p1 => this.InvokeOnFinish())); }
         }
+
+        private void SaveOpeningBalance()
+        {
+            if (_openingBalanceManager.Set(SelectedProject, SelectedHead, OpeningBalanceAmount))
+                NotifyOpeningBalanceDataGrid();
+            ShowMessage(MessageService.Instance.GetLatestMessage());
+        }
+
+        private void ShowMessage(Message message)
+        {
+            MessageText = message.MessageText;
+            ColorCode = MessageService.Instance.GetColorCode(message.MessageType);
+        }
+
+        public void NotifyOpeningBalanceDataGrid()
+        {
+            OpeningBalanceDataGridItems = _openingBalanceManager.GetOpeningBalances(SelectedProject);
+        }
     }
 
     public class OpeningBalanceGridRow
     {
         public string HeadName { get; set; }
-        public double CurrentYear { get; set; }
-        public double PreviousYear { get; set; }
+        public double CurrentYearBalance { get; set; }
+        //public double PreviousYearBalance { get; set; }
     }
 }

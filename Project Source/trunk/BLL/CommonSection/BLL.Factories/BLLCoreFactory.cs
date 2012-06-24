@@ -10,6 +10,7 @@ using BLL.ProjectManagement;
 using BLL.VoucherManagement;
 using BLL.FixedAssetSchedule;
 using BLL.BudgetManagement;
+using BLL.OpeningBalanceManagement;
 
 namespace BLL.Factories
 {
@@ -24,6 +25,7 @@ namespace BLL.Factories
         public static IRepository<Parameter> ParameterRepository { get; set; }
         public static IRepository<FixedAsset> FixedAssetRepository { get; set; }
         public static IRepository<BankBook> BankBookRepository { get; set; }
+        public static IRepository<OpeningBalance> OpeningBalanceRepository { get; set; }
 
         public static ILedgerManager GetLedgerManager()
         {
@@ -134,14 +136,28 @@ namespace BLL.Factories
             //<<<<<<< HEAD
             if (BudgetRepository != null && ProjectRepository != null && ProjectHeadRepository != null)
             {
-                BudgetManager projectManager = new BudgetManager(BudgetRepository, ProjectRepository, ProjectHeadRepository);
-                projectManager.ManagerEvent += MessageService.Instance.ManagerEventHandler;
-                //projectManager.LedgerEvent += LogService.Instance.ManagerEventHandler;
-                return projectManager;
+                BudgetManager budgetManager = new BudgetManager(BudgetRepository, ProjectRepository, ProjectHeadRepository);
+                budgetManager.ManagerEvent += MessageService.Instance.ManagerEventHandler;
+                //budgetManager.LedgerEvent += LogService.Instance.ManagerEventHandler;
+                return budgetManager;
             }
 
             throw new ArgumentNullException("message");
         }
+
+        public static IOpeningBalanceManager GetOpeningBalanceManager()
+        {
+            if (OpeningBalanceRepository != null && ProjectRepository != null && ProjectHeadRepository != null)
+            {
+                OpeningBalanceManager openingBalanceManager = new OpeningBalanceManager(OpeningBalanceRepository, ProjectHeadRepository, ParameterRepository);
+                openingBalanceManager.ManagerEvent += MessageService.Instance.ManagerEventHandler;
+                //openingBalanceManager.LedgerEvent += LogService.Instance.ManagerEventHandler;
+                return openingBalanceManager;
+            }
+
+            throw new ArgumentNullException("message");
+        }
+        
         //=======
         //            if (ProjectHeadRepository != null && BudgetRepository != null)
         //            {

@@ -9,7 +9,7 @@ namespace BLL.Model.Managers
     {
 
         //bool Set(Project project, Head head, string financialYear, double budgetAmount);
-        IList<Budget> GetAllBudgets();
+        IList<Budget> GetAllBudgets(Project project);
         bool Set(Project project, Head head, double amount, int budgetYear);
     }
 }

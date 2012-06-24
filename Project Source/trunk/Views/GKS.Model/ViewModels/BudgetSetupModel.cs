@@ -66,6 +66,7 @@ namespace GKS.Model.ViewModels
                 NotifyPropertyChanged("SelectedProject");
                 NotifyPropertyChanged("AllHeads");
                 SelectedHead = null;
+                NotifyBudgetDataGrid();
             }
         }
 
@@ -255,7 +256,7 @@ namespace GKS.Model.ViewModels
 
         private void NotifyBudgetDataGrid()
         {
-            BudgetDataGridItems = _budgetManager.GetAllBudgets();
+            BudgetDataGridItems = _budgetManager.GetAllBudgets(SelectedProject);
 //>>>>>>> githubJakaria42/master
         }
     }

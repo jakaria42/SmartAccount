@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SOLVE")]
 [assembly: AssemblyProduct("SOLVE")]
-[assembly: AssemblyCopyright("Copyright © SOLVE 2011")]
+[assembly: AssemblyCopyright("Copyright © SOLVE 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

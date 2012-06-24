@@ -44,15 +44,15 @@ namespace CodeFirst
                                                                new Parameter
                                                                    {
                                                                        Key = "FinancialYearStartDate",
-                                                                       Value = DateTime.Now.ToString("dd/mm"),
+                                                                       Value = DateTime.Now.ToString("dd-mm-yyyy"),
                                                                        IsActive = true
                                                                    },
-                                                               new Parameter
-                                                                   {
-                                                                       Key = "CurrentFinancialYear",
-                                                                       Value = DateTime.Now.Year.ToString(),
-                                                                       IsActive = true
-                                                                   },
+                                                               //new Parameter
+                                                               //    {
+                                                               //        Key = "CurrentFinancialYear",
+                                                               //        Value = DateTime.Now.Year.ToString(),
+                                                               //        IsActive = true
+                                                               //    },
                                                                new Parameter
                                                                    {
                                                                        Key = "CurrentFinancialYearStartDate",

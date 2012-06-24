@@ -33,11 +33,10 @@ namespace BLL.FixedAssetSchedule
             return rate;
         }
 
-        public IList<DepreciationRate> GetDepreciationRates()
+        public IList<DepreciationRate> GetDepreciationRates(Project project)
         {
-            IList<DepreciationRate> depreciationRates = _depreciationRateRepository.GetAll().ToList();
-
-            return depreciationRates;
+            return _depreciationRateRepository.Get(r => r.ProjectHead.Project.ID == project.ID).ToList();
+            //return _depreciationRateRepository.GetAll().ToList();
         }
 
         public bool Set(Project project, Head head, double rate)

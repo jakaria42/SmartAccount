@@ -48,11 +48,13 @@
     <Compile Include="Managers\IHeadManager.cs" />
     <Compile Include="Managers\ILedgerManager.cs" />
     <Compile Include="Managers\IMassVoucherManager.cs" />
+    <Compile Include="Managers\IOpeningBalanceManager.cs" />
     <Compile Include="Managers\IParameterManager.cs" />
     <Compile Include="Managers\IProjectManager.cs" />
     <Compile Include="Managers\IRecordManager.cs" />
     <Compile Include="Managers\IVoucherManager.cs" />
     <Compile Include="Managers\ManagerBase.cs" />
+    <Compile Include="Managers\OpeningBalnce.cs" />
     <Compile Include="Repositories\IGenericRepository.cs" />
     <Compile Include="Entity\BankBook.cs" />
     <Compile Include="Constants.cs" />

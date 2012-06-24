@@ -60,6 +60,7 @@ namespace GKS.Model.ViewModels
                 NotifyPropertyChanged("SelectedProject");
                 NotifyPropertyChanged("AllHeads");
                 SelectedHead = null;
+                NotifyDepreciationRateDataGrid();
             }
         }
 
@@ -184,7 +185,7 @@ namespace GKS.Model.ViewModels
 
         private void NotifyDepreciationRateDataGrid()
         {
-            DepreciationRateDataGridItems = _depreciationRateManager.GetDepreciationRates();
+            DepreciationRateDataGridItems = _depreciationRateManager.GetDepreciationRates(SelectedProject);
         }
     }
 

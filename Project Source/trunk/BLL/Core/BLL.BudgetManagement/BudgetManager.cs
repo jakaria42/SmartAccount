@@ -20,9 +20,10 @@ namespace BLL.BudgetManagement
             _projectRepository = projectRepository;
             _projectHeadRepository = projectHeadRepository;
         }
-        public IList<Budget> GetAllBudgets()
+        public IList<Budget> GetAllBudgets(Project project)
         {
-            return _budgetRepository.GetAll().ToList();
+            return _budgetRepository.Get(r => r.ProjectHead.Project.ID == project.ID).ToList();
+            //return _budgetRepository.GetAll().ToList();
         }
 
 

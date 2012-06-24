@@ -5,7 +5,7 @@ namespace BLL.Model.Managers
     public interface IDepreciationRateManager
     {
         double GetDepreciationRate(string projectName, string headName);
-        IList<DepreciationRate> GetDepreciationRates();
+        IList<DepreciationRate> GetDepreciationRates(Project project);
         bool Set(Project project, Head head, double rate);
     }
 }
