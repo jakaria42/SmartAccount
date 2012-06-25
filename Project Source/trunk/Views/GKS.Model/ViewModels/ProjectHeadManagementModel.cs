@@ -15,6 +15,8 @@ namespace GKS.Model.ViewModels
     {
         private readonly IProjectManager _projectManager;
         private readonly IHeadManager _headManager;
+        private readonly IOpeningBalanceManager _openingBalanceManager;
+        //private readonly IParameterManager _parameterManager;
 
         private IList<Head> _allHeads;
 
@@ -24,6 +26,9 @@ namespace GKS.Model.ViewModels
             {
                 _projectManager = BLLCoreFactory.GetProjectManager();
                 _headManager = BLLCoreFactory.GetHeadManager();
+                _openingBalanceManager = BLLCoreFactory.GetOpeningBalanceManager();
+                //_parameterManager = BLLCoreFactory.GetParameterManager();
+
                 _allHeads = _headManager.GetHeads(false, false);
 
                 AllProjectItems = new ObservableCollection<Project>(_projectManager.GetProjects(false));

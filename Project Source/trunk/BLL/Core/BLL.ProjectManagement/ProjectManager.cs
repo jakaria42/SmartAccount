@@ -14,13 +14,21 @@ namespace BLL.ProjectManagement
         private readonly IRepository<ProjectHead> _projectHeadRepository;
         private readonly IRepository<Head> _headRepository;
         private readonly IRepository<Record> _recordRepository;
+        private readonly IRepository<OpeningBalance> _openingBalanceRepository;
+        private readonly IRepository<Parameter> _parameterRepository;
 
-        public ProjectManager(IRepository<Project> projectRepository, IRepository<Head> headRepository, IRepository<ProjectHead> projectHeadRepository, IRepository<Record> recordRepository)
+        private readonly string currentFinancialYear;
+
+        public ProjectManager(IRepository<Project> projectRepository, IRepository<Head> headRepository, IRepository<ProjectHead> projectHeadRepository, IRepository<Record> recordRepository, IRepository<OpeningBalance> openingBalanceRepository, IRepository<Parameter> parameterRepository)
         {
             _projectRepository = projectRepository;
             _headRepository = headRepository;
             _projectHeadRepository = projectHeadRepository;
             _recordRepository = recordRepository;
+            _openingBalanceRepository = openingBalanceRepository;
+            _parameterRepository = parameterRepository;
+
+            currentFinancialYear = _parameterRepository.GetSingle(p => p.Key == "CurrentFinancialYear").Value;
         }
 
         public IList<Project> GetProjects(bool bringInactive = true)
@@ -129,6 +137,21 @@ namespace BLL.ProjectManagement
                 {
                     ProjectHead newProjectHead = new ProjectHead { Project = project, Head = addableHead, IsActive = true };
                     _projectHeadRepository.Insert(newProjectHead);
+
+                    if (addableHead.HeadType == "Capital")
+                    {
+                        OpeningBalance openingBalance = new OpeningBalance
+                        {
+                            Balance = 0,
+                            FinancialYear = currentFinancialYear,
+                            Date = DateTime.Today,
+                            IsActive = Convert.ToInt32(currentFinancialYear) < DateTime.Now.Year ? false : true,
+                            Description = "opening",
+                            ProjectHead = newProjectHead
+                        };
+                        _openingBalanceRepository.Insert(openingBalance);
+                    }
+
                     headNames += string.IsNullOrWhiteSpace(headNames) ? addableHead.Name : ", " + addableHead.Name;
                 }
             }
@@ -137,6 +160,7 @@ namespace BLL.ProjectManagement
 
             if (count > 0)
             {
+                _openingBalanceRepository.Save();
                 InvokeManagerEvent(EventType.Success, "", string.Concat("Head(s) added to project '", project.Name, "': ", headNames, "."));
             }
             else

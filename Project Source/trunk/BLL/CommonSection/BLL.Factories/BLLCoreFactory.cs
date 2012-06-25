@@ -107,9 +107,9 @@ namespace BLL.Factories
 
         public static IProjectManager GetProjectManager()
         {
-            if (ProjectRepository != null && HeadRepository != null && ProjectHeadRepository != null && RecordRepository != null)
+            if (ProjectRepository != null && HeadRepository != null && ProjectHeadRepository != null && RecordRepository != null && OpeningBalanceRepository != null && ParameterRepository != null)
             {
-                ProjectManager projectManager = new ProjectManager(ProjectRepository, HeadRepository, ProjectHeadRepository, RecordRepository);
+                ProjectManager projectManager = new ProjectManager(ProjectRepository, HeadRepository, ProjectHeadRepository, RecordRepository, OpeningBalanceRepository, ParameterRepository);
                 projectManager.ManagerEvent += MessageService.Instance.ManagerEventHandler;
                 //projectManager.LedgerEvent += LogService.Instance.ManagerEventHandler;
                 return projectManager;
