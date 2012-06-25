@@ -25,6 +25,7 @@ namespace BLL.OpeningBalanceManagement
         public string GetCurrentFinancialYear()
         {
             return _parameterRepository == null ? "" : _parameterRepository.GetSingle(p => p.Key == "CurrentFinancialYear").Value;
+            //return _parameterRepository == null ? "" : _parameterManager.Get("CurrentFinancialYear");
         }
 
         public IList<OpeningBalance> GetOpeningBalances(Project project)
@@ -67,6 +68,7 @@ namespace BLL.OpeningBalanceManagement
                     openingBalance.FinancialYear = currentFinancialYear;
                     openingBalance.Date = DateTime.Today;
                     openingBalance.IsActive = Convert.ToInt32(currentFinancialYear) < DateTime.Now.Year ? false : true;
+                    openingBalance.Description = "opening";
 
                     update = true;
                 }
@@ -78,6 +80,7 @@ namespace BLL.OpeningBalanceManagement
                         FinancialYear = currentFinancialYear,
                         Date = DateTime.Today,
                         IsActive = Convert.ToInt32(currentFinancialYear) < DateTime.Now.Year ? false : true,
+                        Description = "opening",
                         ProjectHead = projectHead
                     };
                 }

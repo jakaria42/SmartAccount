@@ -22,7 +22,7 @@ namespace BLL.ParameterManagement
 
         public void Set(string key, string value)
         {
-            if (key == "" || value == "")
+            if (key == "")
                 return;
 
             Parameter existingParameter = _parameterRepository.GetSingle(p => p.Key == key);

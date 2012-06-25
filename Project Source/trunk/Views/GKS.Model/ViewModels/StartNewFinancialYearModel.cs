@@ -48,7 +48,7 @@ namespace GKS.Model.ViewModels
         {
             // We'll show budgets for current year +- 10 years, total 20 years.
             List<int> years = new List<int>();
-            for (int i = DateTime.Now.Year + 10; i >= DateTime.Now.Year; i--)
+            for (int i = DateTime.Now.Year; i < DateTime.Now.Year+10; i++)
             {
                 years.Add(i);
             }
@@ -151,10 +151,18 @@ namespace GKS.Model.ViewModels
             _parameterManager.Set("CurrentFinancialYear", SelectedNewFinancialYear.ToString());
         }
 
+        private bool hasOpenFinancialYear
+        {
+            get
+            {
+                return _parameterManager.Get("CurrentFinancialYear") != "";
+            }
+        }
+                
         private RelayCommand _openNewFinancialYearClicked;
         public ICommand OpenNewFinancialYearClicked
         {
-            get { return _openNewFinancialYearClicked ?? (_openNewFinancialYearClicked = new RelayCommand(p1 => this.OpenNewFinancialYear())); }
+            get { return _openNewFinancialYearClicked ?? (_openNewFinancialYearClicked = new RelayCommand(p1 => this.OpenNewFinancialYear(), p2 => !hasOpenFinancialYear)); }
         }
         
         private RelayCommand _editOpeningBalanceClicked;

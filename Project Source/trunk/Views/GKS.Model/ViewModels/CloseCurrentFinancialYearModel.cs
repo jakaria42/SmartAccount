@@ -12,25 +12,22 @@ namespace GKS.Model.ViewModels
     public class CloseCurrentFinancialYearModel : ViewModelBase
     {
         private readonly IProjectManager _projectManager;
+        private readonly IParameterManager _parameterManager;
+
         public CloseCurrentFinancialYearModel()
         {
             _projectManager = BLLCoreFactory.GetProjectManager();
+            _parameterManager = BLLCoreFactory.GetParameterManager();
 
             _currentFinancialYearDatagrid = new List<CurrentYearDatagridRow>();
             AllProjects = _projectManager.GetProjects(false);
         }
 
-        string _currentFinancialYear;
-        string CurrentFinancialYear
+        public string CurrentFinancialYear
         {
             get
             {
-                return _currentFinancialYear;
-            }
-            set
-            {
-                _currentFinancialYear = value;
-                NotifyPropertyChanged("CurrentFinancialYear");
+                return _parameterManager.Get("CurrentFinancialYear");
             }
         }
 
@@ -96,10 +93,23 @@ namespace GKS.Model.ViewModels
             }
         }
 
+        private void CloseCurrentFinancialYear()
+        {
+            _parameterManager.Set("CurrentFinancialYear", "");
+        }
+
+        private bool hasOpenFinancialYear
+        {
+            get
+            {
+                return _parameterManager.Get("CurrentFinancialYear") != "";
+            }
+        }
+
         private RelayCommand _closeFinancialYearClicked;
         public ICommand CloseFinancialYearClicked
         {
-            get { return _closeFinancialYearClicked ?? (_closeFinancialYearClicked = new RelayCommand(p1 => this.InvokeOnFinish())); }
+            get { return _closeFinancialYearClicked ?? (_closeFinancialYearClicked = new RelayCommand(p1 => this.CloseCurrentFinancialYear(), p2 => hasOpenFinancialYear)); }
         }
 
         private RelayCommand _oKClicked;

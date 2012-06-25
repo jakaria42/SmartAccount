@@ -4,7 +4,7 @@
         Title="CloseCurrentFinancialYear" Height="550" Width="693" 
         WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
     <Grid>
-        <Label Content="Current acoouting year:" Height="28" HorizontalAlignment="Left" Margin="64,50,0,0" Name="labelYear" VerticalAlignment="Top" />
+        <Label Content="Current accouting year:" Height="28" HorizontalAlignment="Left" Margin="64,50,0,0" Name="labelYear" VerticalAlignment="Top" />
         <TextBox Height="23" HorizontalAlignment="Left" Margin="187,52,0,0" Name="textBoxCurrentYear" VerticalAlignment="Top" Width="120" IsReadOnly="True"
                  Text="{Binding Path=CurrentFinancialYear, Mode=OneWay}" />
         

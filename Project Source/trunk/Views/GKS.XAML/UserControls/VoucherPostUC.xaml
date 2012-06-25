@@ -101,10 +101,10 @@
 
 
             <!-- Check info Section started -->
-            <CheckBox Content="Payment in cheque" Name="PaymentInChequeCheckBox"  Height="16" HorizontalAlignment="Left" Margin="388,32,0,0" VerticalAlignment="Top" IsChecked="{Binding Path=IsPaymentInCheque, Mode=TwoWay}" IsEnabled="{Binding Path=IsEnabled, ElementName=ChequeInfoGroupBox}" Grid.Row="3" >
+            <CheckBox Content="Bank transaction" Name="PaymentInChequeCheckBox"  Height="16" HorizontalAlignment="Left" Margin="388,32,0,0" VerticalAlignment="Top" IsChecked="{Binding Path=IsPaymentInCheque, Mode=TwoWay}" IsEnabled="{Binding Path=IsEnabled, ElementName=ChequeInfoGroupBox}" Grid.Row="3" >
                 <CheckBox.ToolTip>
                     <ToolTip>
-                        Check to provide cheque information.
+                        Mark to provide bank information.
                     </ToolTip>
                 </CheckBox.ToolTip>
             </CheckBox>
@@ -142,7 +142,7 @@
             <!-- Fixed Asset Section ends here -->
 
             <GroupBox Header="Amount information" Height="151" HorizontalAlignment="Left" Margin="28,5,0,0" VerticalAlignment="Top" Width="234" Grid.Row="3" />
-            <GroupBox Header="Cheque information" Name="ChequeInfoGroupBox" Height="151" HorizontalAlignment="Left" Margin="279,5,0,0" VerticalAlignment="Top" Width="253" IsEnabled="{Binding Path=IsChequeGroupboxEnabled, Mode=TwoWay}" Grid.Row="3" />
+            <GroupBox Header="Bank information" Name="ChequeInfoGroupBox" Height="151" HorizontalAlignment="Left" Margin="279,5,0,0" VerticalAlignment="Top" Width="253" IsEnabled="{Binding Path=IsChequeGroupboxEnabled, Mode=TwoWay}" Grid.Row="3" />
             <GroupBox Header="Fixed asset / Advance" Name="FixedAssetOrAdvanceGroupBox" Height="151" HorizontalAlignment="Left" Margin="548,5,0,0" VerticalAlignment="Top" Width="278" IsEnabled="{Binding Path=IsFixedAssetOrAdvanceGroupboxEnabled, Mode=TwoWay}" Grid.Row="3" />
 
             <!-- Remarks section started -->
