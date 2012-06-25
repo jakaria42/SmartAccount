@@ -12,13 +12,18 @@ namespace GKS.Model.ViewModels
     public class StartNewFinancialYearModel : ViewModelBase
     {
         private readonly IProjectManager _projectManager;
+        private readonly IParameterManager _parameterManager;
+
         public StartNewFinancialYearModel() 
         {
             try
             {
                 _projectManager = BLLCoreFactory.GetProjectManager();
+                _parameterManager = BLLCoreFactory.GetParameterManager();
 
                 _lastFinancialYearDatagrid = new List<LastYearDatagridRow>();
+
+                LoadFinancialYears();
                 AllProjects = _projectManager.GetProjects(false);
             }
             catch
@@ -39,8 +44,20 @@ namespace GKS.Model.ViewModels
             }
         }
 
-        private string[] _newFinancialYear;
-        public string[] NewFinancialYear
+        private void LoadFinancialYears()
+        {
+            // We'll show budgets for current year +- 10 years, total 20 years.
+            List<int> years = new List<int>();
+            for (int i = DateTime.Now.Year + 10; i >= DateTime.Now.Year; i--)
+            {
+                years.Add(i);
+            }
+
+            NewFinancialYear = years;
+        }
+
+        private List<int> _newFinancialYear;
+        public List<int> NewFinancialYear
         {
             get
             {
@@ -53,8 +70,8 @@ namespace GKS.Model.ViewModels
             }
         }
 
-        private string _selectedNewFinancialYear;
-        public string SelectedNewFinancialYear
+        private int _selectedNewFinancialYear;
+        public int SelectedNewFinancialYear
         {
             get
             {
@@ -129,10 +146,15 @@ namespace GKS.Model.ViewModels
             }
         }
 
+        private void OpenNewFinancialYear()
+        {
+            _parameterManager.Set("CurrentFinancialYear", SelectedNewFinancialYear.ToString());
+        }
+
         private RelayCommand _openNewFinancialYearClicked;
         public ICommand OpenNewFinancialYearClicked
         {
-            get { return _openNewFinancialYearClicked ?? (_openNewFinancialYearClicked = new RelayCommand(p1 => this.InvokeOnFinish())); }
+            get { return _openNewFinancialYearClicked ?? (_openNewFinancialYearClicked = new RelayCommand(p1 => this.OpenNewFinancialYear())); }
         }
         
         private RelayCommand _editOpeningBalanceClicked;

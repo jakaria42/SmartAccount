@@ -22,6 +22,9 @@ namespace BLL.ParameterManagement
 
         public void Set(string key, string value)
         {
+            if (key == "" || value == "")
+                return;
+
             Parameter existingParameter = _parameterRepository.GetSingle(p => p.Key == key);
             if (existingParameter == null)
             {
@@ -31,8 +34,8 @@ namespace BLL.ParameterManagement
             {
                 existingParameter.Value = value;
                 _parameterRepository.Update(existingParameter);
-                _parameterRepository.Save();
             }
+            _parameterRepository.Save();
         }
 
         public string Get(string key)

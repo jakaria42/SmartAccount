@@ -8,6 +8,7 @@ namespace BLL.Model.Managers
 {
     public interface IOpeningBalanceManager
     {
+        string GetCurrentFinancialYear();
         IList<OpeningBalance> GetOpeningBalances(Project project);
         bool Set(Project project, Head head, double amount);
     }

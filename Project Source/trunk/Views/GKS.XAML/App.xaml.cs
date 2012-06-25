@@ -32,6 +32,7 @@ namespace GKS.XAML
             BLLCoreFactory.RecordRepository = new Repository<Record>();
             BLLCoreFactory.BankBookRepository = new Repository<BankBook>();
             BLLCoreFactory.FixedAssetRepository = new Repository<FixedAsset>();
+            BLLCoreFactory.OpeningBalanceRepository = new Repository<OpeningBalance>();
 
             CultureInfo ci = CultureInfo.CreateSpecificCulture(CultureInfo.CurrentCulture.Name);
             ci.DateTimeFormat.ShortDatePattern = "dd-MM-yyyy";

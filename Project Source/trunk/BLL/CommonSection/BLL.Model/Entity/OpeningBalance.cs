@@ -8,7 +8,7 @@ namespace BLL.Model.Entity
     {
         public int ID { get; set; }
         public DateTime Date { get; set; }
-        public int Balance { get; set; }
+        public double Balance { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; }
         public string FinancialYear { get; set; }

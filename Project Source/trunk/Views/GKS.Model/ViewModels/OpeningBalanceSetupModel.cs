@@ -15,6 +15,7 @@ namespace GKS.Model.ViewModels
         private readonly IProjectManager _projectManager;
         private readonly IHeadManager _headManager;
         private readonly IOpeningBalanceManager _openingBalanceManager;
+        private readonly IParameterManager _parameterManager;
 
         public OpeningBalanceSetupModel()
         {
@@ -23,8 +24,9 @@ namespace GKS.Model.ViewModels
                 _projectManager = BLLCoreFactory.GetProjectManager();
                 _headManager = BLLCoreFactory.GetHeadManager();
                 _openingBalanceManager = BLLCoreFactory.GetOpeningBalanceManager();
+                _parameterManager = BLLCoreFactory.GetParameterManager();
 
-                NotifyOpeningBalanceDataGrid();
+                //NotifyOpeningBalanceDataGrid();
                 OpeningBalanceAmount = 0;
 
                 AllProjects = _projectManager.GetProjects(false);
@@ -92,7 +94,8 @@ namespace GKS.Model.ViewModels
         {
             get
             {
-                return _openingBalanceCurrentYear;
+                return _parameterManager.GetCurrentFinancialYear();
+                //return _openingBalanceCurrentYear;
             }
             set
             {
@@ -200,6 +203,9 @@ namespace GKS.Model.ViewModels
 
         public void NotifyOpeningBalanceDataGrid()
         {
+            if (SelectedProject == null)
+                return;
+
             OpeningBalanceDataGridItems = _openingBalanceManager.GetOpeningBalances(SelectedProject);
         }
     }

@@ -24,7 +24,7 @@ namespace GKS.Model.ViewModels
                 _headManager = BLLCoreFactory.GetHeadManager();
                 _depreciationRateManager = BLLCoreFactory.GetDepreciationRateManager();
 
-                NotifyDepreciationRateDataGrid();
+                //NotifyDepreciationRateDataGrid();
 
                 AllProjects = _projectManager.GetProjects();
                 DepreciationRateEdit = 0;
@@ -185,6 +185,9 @@ namespace GKS.Model.ViewModels
 
         private void NotifyDepreciationRateDataGrid()
         {
+            if (SelectedProject == null)
+                return;
+
             DepreciationRateDataGridItems = _depreciationRateManager.GetDepreciationRates(SelectedProject);
         }
     }
