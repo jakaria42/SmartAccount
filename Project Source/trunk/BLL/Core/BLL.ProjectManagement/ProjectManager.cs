@@ -28,7 +28,8 @@ namespace BLL.ProjectManagement
             _openingBalanceRepository = openingBalanceRepository;
             _parameterRepository = parameterRepository;
 
-            currentFinancialYear = _parameterRepository.GetSingle(p => p.Key == "CurrentFinancialYear").Value;
+            //currentFinancialYear = _parameterRepository.GetSingle(p => p.Key == "CurrentFinancialYear").Value;
+            currentFinancialYear = "2012";
         }
 
         public IList<Project> GetProjects(bool bringInactive = true)
