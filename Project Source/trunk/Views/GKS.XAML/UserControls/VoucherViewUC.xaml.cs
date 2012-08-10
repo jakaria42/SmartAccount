@@ -36,7 +36,7 @@ namespace GKS.XAML.UserControls
             if (voucher == null)
                 return;
 
-            VoucherDetailsWindow voucherWindow = new VoucherDetailsWindow(voucher) { Owner = Window.GetWindow(this) };
+            VoucherDetailsWindow voucherWindow = new VoucherDetailsWindow(voucher, _vm.SelectedProject.ID) { Owner = Window.GetWindow(this) };
             voucherWindow.Closed += (sndr, eventArgs) => _vm.Reset();
             voucherWindow.ShowDialog();
         }

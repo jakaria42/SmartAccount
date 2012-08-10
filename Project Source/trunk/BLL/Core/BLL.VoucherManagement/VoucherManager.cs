@@ -83,13 +83,16 @@ namespace BLL.VoucherManagement
             return records;
         }
 
-        public IList<Record> GetVouchers(string voucherNo, ref double amount)
+        public IList<Record> GetVouchers(int projectID, string voucherNo, ref double amount)
         {
             amount = 0;
             string[] voucherNoParts = voucherNo.Split('-');
             string voucherType = voucherNoParts[0];
             int voucherSerialNo = int.Parse(voucherNoParts[1]);
-            IList<Record> records = _recordRepository.Get(r => r.VoucherType == voucherType && r.VoucherSerialNo == voucherSerialNo).ToList();
+            IList<Record> records = _recordRepository.Get(r => r.ProjectHead.Project.ID == projectID && r.VoucherType == voucherType && r.VoucherSerialNo == voucherSerialNo).ToList();
+
+            if (records == null)
+                return null;
 
             amount = records.Sum(r => r.Debit);
 

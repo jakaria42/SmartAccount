@@ -28,11 +28,11 @@ namespace GKS.XAML.Pages
             this.PreviewKeyDown += HandleEsc;
         }
 
-        public VoucherDetailsWindow(VoucherItem voucher)
+        public VoucherDetailsWindow(VoucherItem voucher, int projectID)
         {
             Init();
             _vm.VoucherItem = voucher;
-            _vm.SetRecordItems();
+            _vm.SetRecordItems(projectID);
 
         }
 

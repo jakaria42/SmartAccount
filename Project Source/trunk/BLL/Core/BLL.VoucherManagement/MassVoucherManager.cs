@@ -79,7 +79,7 @@ namespace BLL.VoucherManagement
             {
                 isValid = SetInformationMessage("ZeroDepreciationProvidedForFixedAsset");
             }
-            else if (_voucherManager.GetVouchers(massVoucher.VoucherType + "-" + massVoucher.VoucherSerialNo.ToString(), ref ignored).Count() != 0)
+            else if (_voucherManager.GetVouchers(massVoucher.Project.ID, massVoucher.VoucherType + "-" + massVoucher.VoucherSerialNo.ToString(), ref ignored).Count() != 0)
             {
                 isValid = SetWarningMessage("VoucherAlreadyExists");
             }

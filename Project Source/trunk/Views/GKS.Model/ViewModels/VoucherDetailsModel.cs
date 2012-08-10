@@ -86,11 +86,11 @@ namespace GKS.Model.ViewModels
             }
         }
 
-        public void SetRecordItems()
+        public void SetRecordItems(int projectID)
         {
             double balance = 0;
             double amount = 0;
-            RecordItems = _voucherManager.GetVouchers(VoucherItem.VoucherNo, ref amount).Select(r =>
+            RecordItems = _voucherManager.GetVouchers(projectID, VoucherItem.VoucherNo, ref amount).Select(r =>
                     new ViewableGridRow
                         {
                             Date = r.Date,
