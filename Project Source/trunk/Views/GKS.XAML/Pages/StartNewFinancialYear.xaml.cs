@@ -30,6 +30,7 @@ namespace GKS.XAML.Pages
         private void buttonEditOpeningBalances_Click(object sender, RoutedEventArgs e)
         {
             OpeningBalanceSetupWindow projectWindow = new OpeningBalanceSetupWindow() { Owner = Window.GetWindow(this) };
+            //projectWindow.Closed += (sndr, eventArgs) => _vm.Reset();
             projectWindow.ShowDialog();
         }
     }

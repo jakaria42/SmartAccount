@@ -30,5 +30,10 @@ namespace GKS.XAML.Pages
             if (e.Key == Key.Escape)
                 Close();
         }
+
+        private void button2_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

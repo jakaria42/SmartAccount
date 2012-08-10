@@ -37,5 +37,10 @@ namespace GKS.XAML.Pages
             if (dataGridOpeningBalance.Items.Count > 0)
                 dataGridOpeningBalance.ExportToExcel();
         }
+
+        private void buttonOK_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

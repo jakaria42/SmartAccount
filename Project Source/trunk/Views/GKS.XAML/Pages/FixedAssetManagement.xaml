@@ -42,7 +42,7 @@
         <Button Content="Dispose" Height="23" HorizontalAlignment="Left" Margin="106,461,0,0" Name="button1" VerticalAlignment="Top" Width="75" 
                 Command="{Binding Path=DisposeButtonClicked}"/>
         <Button Content="OK" Height="23" HorizontalAlignment="Left" Margin="524,461,0,0" Name="button2" VerticalAlignment="Top" Width="75" 
-                Command="{Binding Path=OKButtonClicked}"/>
+                Command="{Binding Path=OKButtonClicked}" Click="button2_Click" />
         
         <TextBlock Height="38" HorizontalAlignment="Left" Margin="187,461,0,0" Name="textBlockMessage" VerticalAlignment="Top" Width="331" TextWrapping="Wrap"
                    Text="{Binding Path=ErrorMessage, Mode=OneWay}" Foreground="{Binding Path=ColorCode, Mode=OneWay}" />

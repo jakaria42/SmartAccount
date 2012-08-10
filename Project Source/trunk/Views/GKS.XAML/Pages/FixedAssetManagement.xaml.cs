@@ -24,5 +24,10 @@ namespace GKS.XAML.Pages
             InitializeComponent();
             DataContext = new FixedAssetManagementModel();
         }
+
+        private void button2_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

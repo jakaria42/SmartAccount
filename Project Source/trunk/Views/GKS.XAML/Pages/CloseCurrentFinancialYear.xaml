@@ -27,14 +27,15 @@
             
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Head of Account" Binding="{Binding Path=HeadName}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Amount" Binding="{Binding Path=Amount}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Debit" Binding="{Binding Path=Debit}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Credit" Binding="{Binding Path=Credit}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
 
         <Button Content="Close Accounting Year" Height="23" HorizontalAlignment="Left" Margin="109,444,0,0" Name="button1" VerticalAlignment="Top" Width="128" 
                 Command="{Binding Path=CloseFinancialYearClicked}" />
         <Button Content="OK" Height="23" HorizontalAlignment="Left" Margin="509,444,0,0" Name="button2" VerticalAlignment="Top" Width="75" 
-                Command="{Binding Path=OKClicked}"/>
+                Command="{Binding Path=OKClicked}" Click="button2_Click" />
         
         <TextBlock Height="36" HorizontalAlignment="Left" Margin="243,444,0,0" Name="textBlockMessaage" VerticalAlignment="Top" Width="260" FontSize="11" TextWrapping="Wrap"
                    Text="{Binding Path=ErrorMessage, Mode=OneWay}" Foreground="{Binding Path=ColorCode, Mode=OneWay}" />

@@ -10,6 +10,8 @@ namespace BLL.Model.Managers
     {
         string GetCurrentFinancialYear();
         IList<OpeningBalance> GetOpeningBalances(Project project);
+        SortedDictionary<string, double> GetAllClosingBalances(Project project);
+        double GetOpeningBalance(Project project, Head head);
         bool Set(Project project, Head head, double amount);
     }
 }

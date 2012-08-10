@@ -14,12 +14,14 @@ namespace BLL.OpeningBalanceManagement
         private readonly IRepository<OpeningBalance> _openingBalanceRepository;
         private readonly IRepository<ProjectHead> _projectHeadRepository;
         private readonly IRepository<Parameter> _parameterRepository;
+        private readonly IRepository<Record> _recordRepository;
 
-        public OpeningBalanceManager(IRepository<OpeningBalance> openingBalanceRepository, IRepository<ProjectHead> projectHeadRepository, IRepository<Parameter> parameterRepository)
+        public OpeningBalanceManager(IRepository<OpeningBalance> openingBalanceRepository, IRepository<ProjectHead> projectHeadRepository, IRepository<Parameter> parameterRepository, IRepository<Record> recordRepository)
         {
             _openingBalanceRepository = openingBalanceRepository;
             _projectHeadRepository = projectHeadRepository;
             _parameterRepository = parameterRepository;
+            _recordRepository = recordRepository;
         }
 
         public string GetCurrentFinancialYear()
@@ -32,6 +34,50 @@ namespace BLL.OpeningBalanceManagement
         {
             string currentFinancialYear = GetCurrentFinancialYear();
             return _openingBalanceRepository.Get(r => r.ProjectHead.Project.ID == project.ID && r.FinancialYear == currentFinancialYear).ToList();
+        }
+
+        public SortedDictionary<string, double> GetAllClosingBalances(Project project)
+        {
+            string currentFinancialYear = GetCurrentFinancialYear();
+            IList<Record> records = _recordRepository.Get(r => r.ProjectHead.Project.ID == project.ID && r.FinancialYear == currentFinancialYear).ToList();
+            //records = records.Where(r => r.LedgerType.Equals("LedgerBook", StringComparison.OrdinalIgnoreCase)).ToList();
+
+            SortedDictionary<string, double> closingBalances = new SortedDictionary<string, double>();
+            foreach(Record record in records)
+            {
+                string headName;
+                if (record.LedgerType.Equals("LedgerBook", StringComparison.OrdinalIgnoreCase))
+                    headName = "Cash Book";
+                else if (record.LedgerType.Equals("BankBook", StringComparison.OrdinalIgnoreCase))
+                    headName = "Bank Book";
+                else
+                    headName = record.ProjectHead.Head.Name;
+
+                double balance = record.Debit - record.Credit;
+
+                double prevBalance;
+                if (closingBalances.TryGetValue(headName, out prevBalance))
+                {
+                    closingBalances.Remove(headName);
+                    balance += prevBalance;
+                }
+                closingBalances.Add(headName, balance);
+            }
+
+            return closingBalances;
+        }
+
+        public double GetOpeningBalance(Project project, Head head)
+        {
+            string currentFinancialYear = GetCurrentFinancialYear();
+            OpeningBalance openingBalance = _openingBalanceRepository.GetSingle(r => r.ProjectHead.Project.ID == project.ID
+                                                                                  && r.ProjectHead.Head.ID == head.ID
+                                                                                  && r.FinancialYear == currentFinancialYear);
+
+            if (openingBalance == null)
+                return 0.0;
+            else
+                return openingBalance.Balance;
         }
 
         public bool Set(Project project, Head head, double amount)
@@ -58,7 +104,8 @@ namespace BLL.OpeningBalanceManagement
             ProjectHead projectHead = _projectHeadRepository.GetSingle(ph => ph.Head.Name == headName && ph.Project.Name == projectName);
 
             bool update = false;
-            if (projectHead != null && projectHead.Budgets != null)
+            //if (projectHead != null && projectHead.Budgets != null)
+            if (projectHead != null && projectHead.OpeningBalances != null)
             {
                 string currentFinancialYear = GetCurrentFinancialYear();
                 OpeningBalance openingBalance = projectHead.OpeningBalances.SingleOrDefault(b => b.FinancialYear == currentFinancialYear);

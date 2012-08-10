@@ -158,7 +158,11 @@ namespace GKS.Model.ViewModels
                 return _parameterManager.Get("CurrentFinancialYear") != "";
             }
         }
-                
+
+        public void Reset()
+        {
+            AllProjects = _projectManager.GetProjects(false);
+        }
         private RelayCommand _openNewFinancialYearClicked;
         public ICommand OpenNewFinancialYearClicked
         {

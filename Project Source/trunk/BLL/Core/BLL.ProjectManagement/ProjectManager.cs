@@ -106,18 +106,33 @@ namespace BLL.ProjectManagement
         {
             int count = 0;
             string headNames = "";
-
+            bool openingBalanceRemoved = false;
             foreach (Head deletableHead in heads)
             {                
                 ProjectHead deletableProjectHead = _projectHeadRepository.GetSingle(ph => ph.Project.ID == project.ID && ph.Head.ID == deletableHead.ID);
                 if (deletableProjectHead != null)
+                {
+                    if (deletableHead.HeadType == "Capital")
+                    {
+                        OpeningBalance openingBalance = _openingBalanceRepository.Get(ob => ob.ProjectHead.ID == deletableProjectHead.ID).SingleOrDefault();
+                        _openingBalanceRepository.Delete(openingBalance);
+                        openingBalanceRemoved = true;
+                    }
+
+                    project.ProjectHeads.Remove(deletableProjectHead);
                     headNames += string.IsNullOrWhiteSpace(headNames) ? deletableHead.Name : ", " + deletableHead.Name;
-                project.ProjectHeads.Remove(deletableProjectHead);
+                }
             }
             count = _projectHeadRepository.Save();
 
             if (count > 0)
             {
+                if (openingBalanceRemoved)
+                {
+                    int removedOpeningBalance = _openingBalanceRepository.Save();
+                    //bool shouldLogFatalError = false;
+                    //if (removedOpeningBalance <= 0) shouldLogFatalError = true;
+                }
                 InvokeManagerEvent(EventType.Success, "", string.Concat("Head(s) removed from project '", project.Name, "': ", headNames, "."));
             }
             else
@@ -131,6 +146,7 @@ namespace BLL.ProjectManagement
         {
             int count = 0;
             string headNames = "";
+            bool addedOpeningBalance = false;
             foreach (Head addableHead in heads)
             {
                 ProjectHead projectHead = _projectHeadRepository.GetSingle(ph => ph.Project.ID == project.ID && ph.Head.ID == addableHead.ID);
@@ -151,6 +167,7 @@ namespace BLL.ProjectManagement
                             ProjectHead = newProjectHead
                         };
                         _openingBalanceRepository.Insert(openingBalance);
+                        addedOpeningBalance = true;
                     }
 
                     headNames += string.IsNullOrWhiteSpace(headNames) ? addableHead.Name : ", " + addableHead.Name;
@@ -161,12 +178,19 @@ namespace BLL.ProjectManagement
 
             if (count > 0)
             {
-                _openingBalanceRepository.Save();
+                if (addedOpeningBalance)
+                {
+                    int iNewOpeningBalance = _openingBalanceRepository.Save();
+                    bool shouldLogError = false;
+                    if (iNewOpeningBalance <= 0) shouldLogError = true;
+                }
                 InvokeManagerEvent(EventType.Success, "", string.Concat("Head(s) added to project '", project.Name, "': ", headNames, "."));
             }
             else
             {
                 _projectHeadRepository.Discard();
+                if (addedOpeningBalance)
+                    _openingBalanceRepository.Discard();
                 InvokeManagerEvent(EventType.Information, string.Concat("No head(s) added to project '", project.Name, "'."));
             }
             return count;

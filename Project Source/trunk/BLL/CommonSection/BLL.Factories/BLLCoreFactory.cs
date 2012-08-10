@@ -147,9 +147,9 @@ namespace BLL.Factories
 
         public static IOpeningBalanceManager GetOpeningBalanceManager()
         {
-            if (OpeningBalanceRepository != null && ProjectRepository != null && ProjectHeadRepository != null)
+            if (OpeningBalanceRepository != null && ProjectRepository != null && ProjectHeadRepository != null && ParameterRepository != null && RecordRepository != null)
             {
-                OpeningBalanceManager openingBalanceManager = new OpeningBalanceManager(OpeningBalanceRepository, ProjectHeadRepository, ParameterRepository);
+                OpeningBalanceManager openingBalanceManager = new OpeningBalanceManager(OpeningBalanceRepository, ProjectHeadRepository, ParameterRepository, RecordRepository);
                 openingBalanceManager.ManagerEvent += MessageService.Instance.ManagerEventHandler;
                 //openingBalanceManager.LedgerEvent += LogService.Instance.ManagerEventHandler;
                 return openingBalanceManager;

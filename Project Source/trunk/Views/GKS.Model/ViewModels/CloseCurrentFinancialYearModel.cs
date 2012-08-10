@@ -13,13 +13,15 @@ namespace GKS.Model.ViewModels
     {
         private readonly IProjectManager _projectManager;
         private readonly IParameterManager _parameterManager;
+        private readonly IOpeningBalanceManager _openingBalanceManager;
 
         public CloseCurrentFinancialYearModel()
         {
             _projectManager = BLLCoreFactory.GetProjectManager();
             _parameterManager = BLLCoreFactory.GetParameterManager();
+            _openingBalanceManager = BLLCoreFactory.GetOpeningBalanceManager();
 
-            _currentFinancialYearDatagrid = new List<CurrentYearDatagridRow>();
+            _currentYearBalancesDataGrid = new List<CurrentYearDatagridRow>();
             AllProjects = _projectManager.GetProjects(false);
         }
 
@@ -56,18 +58,47 @@ namespace GKS.Model.ViewModels
             {
                 _selectedProject = value;
                 NotifyPropertyChanged("SelectedProject");
+                NotifyClosingBalancesGrid();
             }
         }
 
-        IList<CurrentYearDatagridRow> _currentFinancialYearDatagrid;
-        IList<CurrentYearDatagridRow> CurrentFinancialYearDatagrid
+        private SortedDictionary<string, double> _closingBalancesGridItems;
+        private SortedDictionary<string, double> ClosingBalancesGridItems
         {
             get
             {
-                CurrentYearDatagridRow temp = new CurrentYearDatagridRow { HeadName = "Test Head", Amount = 0 };
-                _currentFinancialYearDatagrid.Add(temp);
+                return _closingBalancesGridItems;
+            }
+            set
+            {
+                _closingBalancesGridItems = value;
+                NotifyPropertyChanged("ClosingBalancesGridItems");
+                NotifyPropertyChanged("CurrentYearBalancesDataGrid");
+            }
+        }
 
-                return _currentFinancialYearDatagrid;
+        private IList<CurrentYearDatagridRow> _currentYearBalancesDataGrid;
+        public IList<CurrentYearDatagridRow> CurrentYearBalancesDataGrid
+        {
+            get
+            {
+                if (ClosingBalancesGridItems == null || ClosingBalancesGridItems.Count == 0)
+                    return null;
+
+                _currentYearBalancesDataGrid.Clear();
+                for (int i = 0; i < ClosingBalancesGridItems.Count; i++)
+                {
+                    string headName = ClosingBalancesGridItems.Keys.ToArray()[i];
+                    double balance = ClosingBalancesGridItems.Values.ToArray()[i];
+                    bool isDebit = balance >= 0;
+                    CurrentYearDatagridRow temp = new CurrentYearDatagridRow { HeadName = headName,
+                                                                               Debit = isDebit ? balance : 0,
+                                                                               Credit = isDebit ? 0 : balance
+                    };
+                    _currentYearBalancesDataGrid.Add(temp);
+                }
+
+                return _currentYearBalancesDataGrid;
             }
         }
 
@@ -106,6 +137,14 @@ namespace GKS.Model.ViewModels
             }
         }
 
+        private void NotifyClosingBalancesGrid()
+        {
+            if (SelectedProject == null)
+                return;
+
+            ClosingBalancesGridItems = _openingBalanceManager.GetAllClosingBalances(SelectedProject);
+        }
+
         private RelayCommand _closeFinancialYearClicked;
         public ICommand CloseFinancialYearClicked
         {
@@ -122,6 +161,7 @@ namespace GKS.Model.ViewModels
     public class CurrentYearDatagridRow
     {
         public string HeadName { get; set; }
-        public double Amount { get; set; }
+        public double Debit { get; set; }
+        public double Credit { get; set; }
     }
 }

@@ -37,5 +37,10 @@ namespace GKS.XAML.Pages
             if (dataGridDepreciationRate.Items.Count > 0)
                 dataGridDepreciationRate.ExportToExcel();
         }
+
+        private void buttonOK_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

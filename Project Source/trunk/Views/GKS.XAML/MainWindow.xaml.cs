@@ -120,6 +120,7 @@ namespace GKS.XAML
         private void DepreciationRateClicked(object sender, RoutedEventArgs e)
         {
             DepreciationRateSetup depreciationRateSetup = new DepreciationRateSetup { Owner = this };
+            //depreciationRateSetup.Closed += (sndr, eventArgs) => depreciationRateSetup.Close();
             depreciationRateSetup.ShowDialog();
         }
 

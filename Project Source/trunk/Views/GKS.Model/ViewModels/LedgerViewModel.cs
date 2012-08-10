@@ -17,6 +17,7 @@ namespace GKS.Model.ViewModels
         private readonly IProjectManager _projectManager;
         private readonly IHeadManager _headManager;
         private readonly ILedgerManager _ledgerManager;
+        private readonly IOpeningBalanceManager _openingBalanceManager;
 
         public LedgerViewModel()
         {
@@ -28,6 +29,7 @@ namespace GKS.Model.ViewModels
                 _ledgerManager = BLLCoreFactory.GetLedgerManager();
                 _headManager = BLLCoreFactory.GetHeadManager();
                 _projectManager = BLLCoreFactory.GetProjectManager();
+                _openingBalanceManager = BLLCoreFactory.GetOpeningBalanceManager();
 
                 AllProjects = _projectManager.GetProjects();
 
@@ -237,6 +239,9 @@ namespace GKS.Model.ViewModels
             {
                 if (LedgerGridViewItems == null || LedgerGridViewItems.Count == 0) return null;
                 double balance = 0;
+                if (!ShowAllAdvance && SelectedHead.HeadType.Equals("Capital", StringComparison.OrdinalIgnoreCase))
+                    balance = _openingBalanceManager.GetOpeningBalance(SelectedProject, SelectedHead);
+
                 return LedgerGridViewItems.Select(l => GetLedgerItem(l, ref balance)).ToList();
 
             }

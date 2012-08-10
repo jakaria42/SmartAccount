@@ -230,6 +230,7 @@ namespace BLL.VoucherManagement
                 VoucherSerialNo = _massVoucher.VoucherSerialNo,
                 Link = _massVoucher.LinkedVoucherNo,
                 VoucherType = _massVoucher.VoucherType,
+                FinancialYear = _massVoucher.FinancialYear,
                 IsActive = true,
                 IsFixedAsset = false
             };
@@ -254,6 +255,7 @@ namespace BLL.VoucherManagement
                 VoucherSerialNo = _massVoucher.VoucherSerialNo,
                 Link = _massVoucher.LinkedVoucherNo,
                 VoucherType = _massVoucher.VoucherType,
+                FinancialYear = _massVoucher.FinancialYear,
                 JVDebitOrCredit = _massVoucher.JVDebitOrCredit,
                 IsActive = true
             };
@@ -286,6 +288,7 @@ namespace BLL.VoucherManagement
                                               VoucherSerialNo = _massVoucher.VoucherSerialNo,
                                               Link = _massVoucher.LinkedVoucherNo,
                                               VoucherType = _massVoucher.VoucherType,
+                                              FinancialYear = _massVoucher.FinancialYear,
                                               Debit = debit,
                                               Credit = credit,
                                               IsActive = true,
@@ -305,6 +308,7 @@ namespace BLL.VoucherManagement
                 VoucherSerialNo = _massVoucher.VoucherSerialNo,
                 Link = _massVoucher.LinkedVoucherNo,
                 VoucherType = _massVoucher.VoucherType,
+                FinancialYear = _massVoucher.FinancialYear,
                 Debit = debit,
                 Credit = credit,
                 IsActive = true

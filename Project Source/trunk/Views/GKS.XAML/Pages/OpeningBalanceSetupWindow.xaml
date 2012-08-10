@@ -48,6 +48,6 @@
                    Text="{Binding Path=ErrorMessage, Mode=OneWay}" Foreground="{Binding Path=ColorCode, Mode=OneWay}"/>
         <Button Content="Export" Height="23" HorizontalAlignment="Left" Margin="443,461,0,0" Name="buttonExport" VerticalAlignment="Top" Width="75" Click="buttonExport_Click" />
         <Button Content="OK" Height="23" HorizontalAlignment="Left" Margin="527,461,0,0" Name="buttonOK" VerticalAlignment="Top" Width="75" 
-                Command="{Binding Path=OKButtonClicked}" />
+                Command="{Binding Path=OKButtonClicked}" Click="buttonOK_Click" />
     </Grid>
 </Window>
