@@ -113,6 +113,22 @@ namespace GKS.Model.ViewModels
             {
                 _selectedProject = value;
                 NotifyPropertyChanged("SelectedProject");
+                NotifyClosingBalancesGrid();
+            }
+        }
+
+        private SortedDictionary<string, double> _closingBalancesGridItems;
+        private SortedDictionary<string, double> ClosingBalancesGridItems
+        {
+            get
+            {
+                return _closingBalancesGridItems;
+            }
+            set
+            {
+                _closingBalancesGridItems = value;
+                NotifyPropertyChanged("ClosingBalancesGridItems");
+                NotifyPropertyChanged("LastFinancialYearDatagrid");
             }
         }
 
@@ -121,10 +137,26 @@ namespace GKS.Model.ViewModels
         {
             get
             {
-                LastYearDatagridRow temp = new LastYearDatagridRow { HeadName = "Test Head", Amount = 0 };
-                _lastFinancialYearDatagrid.Add(temp);
+                if (ClosingBalancesGridItems == null || ClosingBalancesGridItems.Count == 0)
+                    return null;
 
-                return _lastFinancialYearDatagrid;
+                _lastFinancialYearDatagrid.Clear();
+                for (int i = 0; i < ClosingBalancesGridItems.Count; i++)
+                {
+                    string headName = ClosingBalancesGridItems.Keys.ToArray()[i];
+                    double balance = ClosingBalancesGridItems.Values.ToArray()[i];
+                    //bool isDebit = balance >= 0;
+                    LastYearDatagridRow temp = new LastYearDatagridRow
+                    {
+                        HeadName = headName,
+                        Amount = balance
+                        //Debit = isDebit ? balance : 0,
+                        //Credit = isDebit ? 0 : balance * (-1)
+                    };
+                    _lastFinancialYearDatagrid.Add(temp);
+                }
+
+                return _lastFinancialYearDatagrid.ToList();
             }
         }
 
@@ -171,6 +203,15 @@ namespace GKS.Model.ViewModels
         public void Reset()
         {
             AllProjects = _projectManager.GetProjects(false);
+        }
+
+        private void NotifyClosingBalancesGrid()
+        {
+            if (SelectedProject == null)
+                return;
+
+            if (LastFinancialYear != "")
+                ClosingBalancesGridItems = _openingBalanceManager.GetClosingBalancesForLastYear(SelectedProject, LastFinancialYear);
         }
 
         private RelayCommand _openNewFinancialYearClicked;

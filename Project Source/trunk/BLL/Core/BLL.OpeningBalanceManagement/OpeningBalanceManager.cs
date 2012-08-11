@@ -67,6 +67,38 @@ namespace BLL.OpeningBalanceManagement
             return closingBalances;
         }
 
+        public SortedDictionary<string, double> GetClosingBalancesForLastYear(Project project, string lastYear)
+        {
+            IList<Record> records = _recordRepository.Get(r => r.ProjectHead.Project.ID == project.ID && r.FinancialYear == lastYear).ToList();
+            records = records.Where(r => r.ProjectHead.Head.HeadType.Equals("Capital", StringComparison.OrdinalIgnoreCase)
+                                         || r.LedgerType.Equals("CashBook", StringComparison.OrdinalIgnoreCase)
+                                         || r.LedgerType.Equals("BankBook", StringComparison.OrdinalIgnoreCase)).ToList();
+
+            SortedDictionary<string, double> closingBalances = new SortedDictionary<string, double>();
+            foreach (Record record in records)
+            {
+                string headName;
+                if (record.LedgerType.Equals("CashBook", StringComparison.OrdinalIgnoreCase))
+                    headName = "Cash Book";
+                else if (record.LedgerType.Equals("BankBook", StringComparison.OrdinalIgnoreCase))
+                    headName = "Bank Book";
+                else
+                    headName = record.ProjectHead.Head.Name;
+
+                double balance = record.Debit - record.Credit;
+
+                double prevBalance;
+                if (closingBalances.TryGetValue(headName, out prevBalance))
+                {
+                    closingBalances.Remove(headName);
+                    balance += prevBalance;
+                }
+                closingBalances.Add(headName, balance);
+            }
+
+            return closingBalances;
+        }
+
         public double GetOpeningBalance(Project project, Head head)
         {
             string currentFinancialYear = GetCurrentFinancialYear();

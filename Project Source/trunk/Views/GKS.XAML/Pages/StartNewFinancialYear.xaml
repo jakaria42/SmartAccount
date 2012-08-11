@@ -32,7 +32,7 @@
             
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Head of Account" Binding="{Binding Path=HeadName}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Amount" Binding="{Binding Path=Amount}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Balance (Debit-Credit)" Binding="{Binding Path=Amount}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
 
