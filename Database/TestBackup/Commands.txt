@@ -1,3 +1,13 @@
 sqlcmd -S .\sqlexpress -i "C:\Documents and Settings\speed\SmartAccount\Database\TestBackup\test_backup.sql" -o "C:\Documents and Settings\speed\SmartAccount\Database\TestBackup\test_backup_output.txt"
 
 sqlcmd -S .\sqlexpress -i "C:\Documents and Settings\speed\SmartAccount\Database\TestBackup\test_restore.sql" -o "C:\Documents and Settings\speed\SmartAccount\Database\TestBackup\test_restore_output.txt"
+
+
+
+Also try this:
+"C:\Program Files\Microsoft SQL Server\100\Tools\Binn\osql.exe" -E -Q "BACKUP DATABASE [CodeFirst.SmartAccountContext] TO DISK='D:\Testbackup\SmartAccount.bak' WITH FORMAT"
+
+To delete the data:
+DELETE FROM [CodeFirst.SmartAccountContext]
+or
+DROP DATABASE [CodeFirst.SmartAccountContext]

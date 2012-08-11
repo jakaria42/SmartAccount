@@ -80,10 +80,19 @@ namespace BLL.OpeningBalanceManagement
                 return openingBalance.Balance;
         }
 
+        public string GetLastFinancialYear()
+        {
+            IList<OpeningBalance> allClosingBalances = _openingBalanceRepository.Get(ob => ob.Description.Equals("closing", StringComparison.OrdinalIgnoreCase)).ToList();
+
+            if (allClosingBalances == null || allClosingBalances.Count == 0)
+                return "";
+
+            return allClosingBalances.Max(cb => cb.FinancialYear);
+        }
+
         public bool OpenNewAccountingYear(string year)
         {
-            IList<OpeningBalance> allClosingBalances = _openingBalanceRepository.GetAll().ToList();
-            allClosingBalances = allClosingBalances.Where(ob => ob.FinancialYear == year && ob.Description.Equals("closing", StringComparison.OrdinalIgnoreCase)).ToList();
+            IList<OpeningBalance> allClosingBalances = _openingBalanceRepository.Get(ob => ob.FinancialYear == year && ob.Description.Equals("closing", StringComparison.OrdinalIgnoreCase)).ToList();
 
             if (allClosingBalances == null)
                 return true;

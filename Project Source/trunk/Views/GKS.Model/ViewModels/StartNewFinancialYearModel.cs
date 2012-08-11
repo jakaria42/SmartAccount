@@ -28,13 +28,14 @@ namespace GKS.Model.ViewModels
 
                 LoadFinancialYears();
                 AllProjects = _projectManager.GetProjects(false);
+                LastFinancialYear = _openingBalanceManager.GetLastFinancialYear();
             }
             catch
             { }
         }
 
-        string _lastFinancialYear;
-        string LastFinancialYear
+        private string _lastFinancialYear;
+        public string LastFinancialYear
         {
             get
             {
@@ -115,8 +116,8 @@ namespace GKS.Model.ViewModels
             }
         }
 
-        IList<LastYearDatagridRow> _lastFinancialYearDatagrid;
-        IList<LastYearDatagridRow> LastFinancialYearDatagrid
+        private IList<LastYearDatagridRow> _lastFinancialYearDatagrid;
+        public IList<LastYearDatagridRow> LastFinancialYearDatagrid
         {
             get
             {
@@ -181,13 +182,13 @@ namespace GKS.Model.ViewModels
         private RelayCommand _editOpeningBalanceClicked;
         public ICommand EditOpeningBalanceClicked
         {
-            get { return _editOpeningBalanceClicked ?? (_editOpeningBalanceClicked = new RelayCommand(p1 => this.InvokeOnFinish())); }
+            get { return _editOpeningBalanceClicked ?? (_editOpeningBalanceClicked = new RelayCommand(p1 => this.InvokeOnFinish(), p2 => hasOpenFinancialYear)); }
         }
 
         private RelayCommand _importToCurrrentYearClicked;
         public ICommand ImportToCurrrentYearClicked
         {
-            get { return _importToCurrrentYearClicked ?? (_importToCurrrentYearClicked = new RelayCommand(p1 => this.InvokeOnFinish())); }
+            get { return _importToCurrrentYearClicked ?? (_importToCurrrentYearClicked = new RelayCommand(p1 => this.InvokeOnFinish(), p2 => hasOpenFinancialYear)); }
         }
     }
 
