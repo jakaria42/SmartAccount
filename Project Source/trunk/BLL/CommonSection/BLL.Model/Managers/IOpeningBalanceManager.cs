@@ -12,6 +12,8 @@ namespace BLL.Model.Managers
         IList<OpeningBalance> GetOpeningBalances(Project project);
         SortedDictionary<string, double> GetAllClosingBalances(Project project);
         double GetOpeningBalance(Project project, Head head);
+        bool OpenNewAccountingYear(string year);
+        bool CloseCurrentAccYear();
         bool Set(Project project, Head head, double amount);
     }
 }

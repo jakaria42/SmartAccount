@@ -16,9 +16,10 @@ namespace GKS.Model.ViewModels
         private readonly IProjectManager _projectManager;
         private readonly IHeadManager _headManager;
         private readonly IOpeningBalanceManager _openingBalanceManager;
-        //private readonly IParameterManager _parameterManager;
+        private readonly IParameterManager _parameterManager;
 
         private IList<Head> _allHeads;
+        private bool _isFinancialYearOpened;
 
         public ProjectHeadManagementModel()
         {
@@ -27,9 +28,12 @@ namespace GKS.Model.ViewModels
                 _projectManager = BLLCoreFactory.GetProjectManager();
                 _headManager = BLLCoreFactory.GetHeadManager();
                 _openingBalanceManager = BLLCoreFactory.GetOpeningBalanceManager();
-                //_parameterManager = BLLCoreFactory.GetParameterManager();
+                _parameterManager = BLLCoreFactory.GetParameterManager();
 
                 _allHeads = _headManager.GetHeads(false, false);
+                _isFinancialYearOpened = !string.IsNullOrWhiteSpace(_parameterManager.GetCurrentFinancialYear());
+                if (!_isFinancialYearOpened)
+                    ShowFinancialYearIsNotOpenedMessage();
 
                 AllProjectItems = new ObservableCollection<Project>(_projectManager.GetProjects(false));
 
@@ -171,7 +175,7 @@ namespace GKS.Model.ViewModels
             get
             {
                 return _resetButtonClicked ??
-                       (_resetButtonClicked = new RelayCommand(p1 => this.Reset()));
+                       (_resetButtonClicked = new RelayCommand(p1 => this.Reset(), p2 => _isFinancialYearOpened));
             }
         }
 
@@ -181,7 +185,7 @@ namespace GKS.Model.ViewModels
             get
             {
                 return _removeHeadButtonClicked ??
-                       (_removeHeadButtonClicked = new RelayCommand(p1 => this.RemoveHeadFromProjetListToRemainingList(), p2 => SelectedHeadForProject != null));
+                       (_removeHeadButtonClicked = new RelayCommand(p1 => this.RemoveHeadFromProjetListToRemainingList(), p2 => _isFinancialYearOpened && SelectedHeadForProject != null));
             }
         }
 
@@ -201,7 +205,7 @@ namespace GKS.Model.ViewModels
             get
             {
                 return _addHeadButtonClicked ??
-                       (_addHeadButtonClicked = new RelayCommand(p1 => this.AddHeadInProjetListFromRemainingList(), p2 => SelectedRemainingHead != null));
+                       (_addHeadButtonClicked = new RelayCommand(p1 => this.AddHeadInProjetListFromRemainingList(), p2 => _isFinancialYearOpened && SelectedRemainingHead != null));
             }
         }
 
@@ -223,6 +227,12 @@ namespace GKS.Model.ViewModels
 
         private void SaveButtonClicked()
         {
+            if (!_isFinancialYearOpened)
+            {
+                ShowFinancialYearIsNotOpenedMessage();
+                return;
+            }
+
             MessageService.Instance.Reset();
             string message = "";
 
@@ -247,6 +257,11 @@ namespace GKS.Model.ViewModels
             _allHeads = _headManager.GetHeads(false, false);
             SelectedProject = null;
             NotificationMessage = "";
+        }
+
+        private void ShowFinancialYearIsNotOpenedMessage()
+        {
+            NotificationMessage = "No opened accounting year found. Please open a financial year first and restart the application.";      
         }
 
         #endregion

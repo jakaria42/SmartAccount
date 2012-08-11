@@ -20,10 +20,10 @@ namespace BLL.ParameterManagement
             _currentFinancialYear = Get("CurrentFinancialYear");
         }
 
-        public void Set(string key, string value)
+        public bool Set(string key, string value)
         {
             if (key == "")
-                return;
+                return false;
 
             Parameter existingParameter = _parameterRepository.GetSingle(p => p.Key == key);
             if (existingParameter == null)
@@ -35,7 +35,10 @@ namespace BLL.ParameterManagement
                 existingParameter.Value = value;
                 _parameterRepository.Update(existingParameter);
             }
-            _parameterRepository.Save();
+            if (_parameterRepository.Save() <= 0)
+                return false;
+
+            return true;
         }
 
         public string Get(string key)

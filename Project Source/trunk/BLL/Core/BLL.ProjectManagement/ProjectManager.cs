@@ -17,8 +17,6 @@ namespace BLL.ProjectManagement
         private readonly IRepository<OpeningBalance> _openingBalanceRepository;
         private readonly IRepository<Parameter> _parameterRepository;
 
-        private readonly string currentFinancialYear;
-
         public ProjectManager(IRepository<Project> projectRepository, IRepository<Head> headRepository, IRepository<ProjectHead> projectHeadRepository, IRepository<Record> recordRepository, IRepository<OpeningBalance> openingBalanceRepository, IRepository<Parameter> parameterRepository)
         {
             _projectRepository = projectRepository;
@@ -27,9 +25,6 @@ namespace BLL.ProjectManagement
             _recordRepository = recordRepository;
             _openingBalanceRepository = openingBalanceRepository;
             _parameterRepository = parameterRepository;
-
-            //currentFinancialYear = _parameterRepository.GetSingle(p => p.Key == "CurrentFinancialYear").Value;
-            currentFinancialYear = "2012";
         }
 
         public IList<Project> GetProjects(bool bringInactive = true)
@@ -157,6 +152,7 @@ namespace BLL.ProjectManagement
 
                     if (addableHead.HeadType == "Capital")
                     {
+                        string currentFinancialYear = _parameterRepository.GetSingle(p => p.Key == "CurrentFinancialYear").Value;
                         OpeningBalance openingBalance = new OpeningBalance
                         {
                             Balance = 0,

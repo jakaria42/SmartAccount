@@ -46,7 +46,7 @@ namespace BLL.OpeningBalanceManagement
             foreach(Record record in records)
             {
                 string headName;
-                if (record.LedgerType.Equals("LedgerBook", StringComparison.OrdinalIgnoreCase))
+                if (record.LedgerType.Equals("CashBook", StringComparison.OrdinalIgnoreCase))
                     headName = "Cash Book";
                 else if (record.LedgerType.Equals("BankBook", StringComparison.OrdinalIgnoreCase))
                     headName = "Bank Book";
@@ -78,6 +78,52 @@ namespace BLL.OpeningBalanceManagement
                 return 0.0;
             else
                 return openingBalance.Balance;
+        }
+
+        public bool OpenNewAccountingYear(string year)
+        {
+            IList<OpeningBalance> allClosingBalances = _openingBalanceRepository.GetAll().ToList();
+            allClosingBalances = allClosingBalances.Where(ob => ob.FinancialYear == year && ob.Description.Equals("closing", StringComparison.OrdinalIgnoreCase)).ToList();
+
+            if (allClosingBalances == null)
+                return true;
+
+            if (allClosingBalances.Count > 0)
+            {
+                foreach (OpeningBalance closingBalance in allClosingBalances)
+                {
+                    _openingBalanceRepository.Delete(closingBalance);
+                }
+
+                if (_openingBalanceRepository.Save() <= 0)
+                    return false;
+            }
+
+            return true;
+        }
+
+        public bool CloseCurrentAccYear()
+        {
+            string currentFinancialYear = GetCurrentFinancialYear();
+            IList<OpeningBalance> allOpeningBalances = _openingBalanceRepository.GetAll().ToList();
+            allOpeningBalances = allOpeningBalances.Where(ob => ob.FinancialYear == currentFinancialYear && ob.Description.Equals("opening", StringComparison.OrdinalIgnoreCase)).ToList();
+            foreach (OpeningBalance openingBalance in allOpeningBalances)
+            {
+                OpeningBalance closingBalance = new OpeningBalance
+                {
+                    Balance = openingBalance.Balance,
+                    FinancialYear = currentFinancialYear,
+                    Date = DateTime.Today,
+                    IsActive = Convert.ToInt32(currentFinancialYear) < DateTime.Now.Year ? false : true,
+                    Description = "closing",
+                    ProjectHead = openingBalance.ProjectHead
+                };
+
+                if (!InsertOrUpdateOpeningBalance(closingBalance, false))
+                    return false;
+            }
+
+            return true;
         }
 
         public bool Set(Project project, Head head, double amount)

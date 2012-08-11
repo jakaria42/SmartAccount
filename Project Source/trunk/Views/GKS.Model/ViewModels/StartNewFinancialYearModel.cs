@@ -6,6 +6,7 @@ using System.Windows.Input;
 using BLL.Model.Managers;
 using BLL.Factories;
 using BLL.Model.Entity;
+using System.Windows;
 
 namespace GKS.Model.ViewModels
 {
@@ -13,13 +14,15 @@ namespace GKS.Model.ViewModels
     {
         private readonly IProjectManager _projectManager;
         private readonly IParameterManager _parameterManager;
+        private readonly IOpeningBalanceManager _openingBalanceManager;
 
-        public StartNewFinancialYearModel() 
+        public StartNewFinancialYearModel()
         {
             try
             {
                 _projectManager = BLLCoreFactory.GetProjectManager();
                 _parameterManager = BLLCoreFactory.GetParameterManager();
+                _openingBalanceManager = BLLCoreFactory.GetOpeningBalanceManager();
 
                 _lastFinancialYearDatagrid = new List<LastYearDatagridRow>();
 
@@ -48,7 +51,7 @@ namespace GKS.Model.ViewModels
         {
             // We'll show budgets for current year +- 10 years, total 20 years.
             List<int> years = new List<int>();
-            for (int i = DateTime.Now.Year; i < DateTime.Now.Year+10; i++)
+            for (int i = DateTime.Now.Year; i < DateTime.Now.Year + 10; i++)
             {
                 years.Add(i);
             }
@@ -148,7 +151,12 @@ namespace GKS.Model.ViewModels
 
         private void OpenNewFinancialYear()
         {
-            _parameterManager.Set("CurrentFinancialYear", SelectedNewFinancialYear.ToString());
+            string newFinancialYear = SelectedNewFinancialYear.ToString();
+            if (!_openingBalanceManager.OpenNewAccountingYear(newFinancialYear))
+                return;
+
+            if (_parameterManager.Set("CurrentFinancialYear", newFinancialYear))
+                MessageBox.Show("New accounting year opened for the year " + newFinancialYear + ".\n\nPlease restart SOLVE to avoid inconsistent behavior.");
         }
 
         private bool hasOpenFinancialYear
@@ -163,12 +171,13 @@ namespace GKS.Model.ViewModels
         {
             AllProjects = _projectManager.GetProjects(false);
         }
+
         private RelayCommand _openNewFinancialYearClicked;
         public ICommand OpenNewFinancialYearClicked
         {
             get { return _openNewFinancialYearClicked ?? (_openNewFinancialYearClicked = new RelayCommand(p1 => this.OpenNewFinancialYear(), p2 => !hasOpenFinancialYear)); }
         }
-        
+
         private RelayCommand _editOpeningBalanceClicked;
         public ICommand EditOpeningBalanceClicked
         {

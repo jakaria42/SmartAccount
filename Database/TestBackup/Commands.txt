@@ -1,0 +1,3 @@
+sqlcmd -S .\sqlexpress -i "C:\Documents and Settings\speed\SmartAccount\Database\TestBackup\test_backup.sql" -o "C:\Documents and Settings\speed\SmartAccount\Database\TestBackup\test_backup_output.txt"
+
+sqlcmd -S .\sqlexpress -i "C:\Documents and Settings\speed\SmartAccount\Database\TestBackup\test_restore.sql" -o "C:\Documents and Settings\speed\SmartAccount\Database\TestBackup\test_restore_output.txt"

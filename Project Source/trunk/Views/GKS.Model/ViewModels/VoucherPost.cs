@@ -872,7 +872,7 @@ namespace GKS.Model.ViewModels
         {
             ShowMessage(new Message
             {
-                MessageText = "No opened financial year found. Please open a financial year first before voucher post.",
+                MessageText = "No opened accounting year found. Please open a financial year first and restart the application before posting a voucher.",
                 MessageType = MessageType.Error
             });
         }

@@ -27,9 +27,9 @@
         <ComboBox DisplayMemberPath="Name" HorizontalAlignment="Left" Margin="122,101,0,0" Name="HeadCombo" VerticalAlignment="Top" Width="607"
                   ItemsSource="{Binding Path=AllHeads, Mode=OneWay}" SelectedItem="{Binding Path=SelectedHead, Mode=TwoWay}" IsEnabled="{Binding Path=IsAllHeadsEnabled, Mode=TwoWay}" />
 
-        <CheckBox Content="Show cash/bank transactions" IsChecked="{Binding Path=ShowCashOrBankTransaction, Mode=TwoWay}" Height="16" HorizontalAlignment="Left" Margin="122,130,0,0" Name="showCashOrBankTransactionCheckBox" VerticalAlignment="Top" IsEnabled="False"/>
+        <!--<CheckBox Content="Show cash/bank transactions" IsChecked="{Binding Path=ShowCashOrBankTransaction, Mode=TwoWay}" Height="16" HorizontalAlignment="Left" Margin="122,130,0,0" Name="showCashOrBankTransactionCheckBox" VerticalAlignment="Top" IsEnabled="False"/>-->
 
-        <CheckBox Content="All advances only" IsChecked="{Binding Path=ShowAllAdvance, Mode=TwoWay}" Height="16" HorizontalAlignment="Left" Margin="303,130,0,0" Name="checkBoxAllAdvance" VerticalAlignment="Top" />
+        <CheckBox Content="All advances only for current accounting year" IsChecked="{Binding Path=ShowAllAdvance, Mode=TwoWay}" Height="16" HorizontalAlignment="Left" Margin="122,130,0,0" Name="checkBoxAllAdvance" VerticalAlignment="Top" />
 
 
         <Label Content="Ledger end date:" Height="28" HorizontalAlignment="Left" Margin="524,128,0,0" Name="label4" VerticalAlignment="Top" IsEnabled="{Binding Path=IsEnabled, ElementName=endDateDatePicker}" />

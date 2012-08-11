@@ -6,6 +6,7 @@ using BLL.Model.Entity;
 using BLL.Model.Managers;
 using BLL.Factories;
 using System.Windows.Input;
+using System.Windows;
 
 namespace GKS.Model.ViewModels
 {
@@ -93,12 +94,12 @@ namespace GKS.Model.ViewModels
                     bool isDebit = balance >= 0;
                     CurrentYearDatagridRow temp = new CurrentYearDatagridRow { HeadName = headName,
                                                                                Debit = isDebit ? balance : 0,
-                                                                               Credit = isDebit ? 0 : balance
+                                                                               Credit = isDebit ? 0 : balance*(-1)
                     };
                     _currentYearBalancesDataGrid.Add(temp);
                 }
 
-                return _currentYearBalancesDataGrid;
+                return _currentYearBalancesDataGrid.ToList();
             }
         }
 
@@ -126,7 +127,9 @@ namespace GKS.Model.ViewModels
 
         private void CloseCurrentFinancialYear()
         {
-            _parameterManager.Set("CurrentFinancialYear", "");
+            _openingBalanceManager.CloseCurrentAccYear();
+            if (_parameterManager.Set("CurrentFinancialYear", ""))
+                MessageBox.Show("Accounting year closed.\n\nPlease restart SOLVE to avoid inconsistent behavior.");
         }
 
         private bool hasOpenFinancialYear

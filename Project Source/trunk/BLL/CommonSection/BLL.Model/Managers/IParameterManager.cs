@@ -4,7 +4,7 @@ namespace BLL.Model.Managers
 {
     public interface IParameterManager
     {
-        void Set(string key, string value);
+        bool Set(string key, string value);
         string Get(string key);
 
         DateTime GetCurrentFinancialYearStartDate();

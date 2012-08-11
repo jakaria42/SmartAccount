@@ -50,7 +50,7 @@
                 </ToolTip>
             </Button.ToolTip>
         </Button>
-        <Label Content="Please add/remove account heads (by clicking the arrows) from the right list-box for the selected project:" Height="28" HorizontalAlignment="Left" Margin="50,32,0,0" Name="label1" VerticalAlignment="Top" />
+        <Label Content="Please add/remove account heads (by clicking the arrows) from the list-boxes on the right for the selected project and save:" Height="28" HorizontalAlignment="Left" Margin="50,32,0,0" Name="label1" VerticalAlignment="Top" />
 
         <Button Height="23" HorizontalAlignment="Left" Margin="759,534,0,0" Name="RefreshButton" VerticalAlignment="Top" Width="25" Command="{Binding Path=ResetButtonClicked, Mode=OneWay}" >
             <Grid>
