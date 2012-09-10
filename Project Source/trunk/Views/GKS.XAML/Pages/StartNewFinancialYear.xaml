@@ -18,6 +18,7 @@
 
         <DataGrid  
             Name="dataGridClosingBalances"
+            IsReadOnly="True"
             GridLinesVisibility="None"                  
             IsTextSearchEnabled="True" 
             AutoGenerateColumns="False"                                                  

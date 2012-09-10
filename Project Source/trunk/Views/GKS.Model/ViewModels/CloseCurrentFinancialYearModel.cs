@@ -129,7 +129,7 @@ namespace GKS.Model.ViewModels
         {
             _openingBalanceManager.CloseCurrentAccYear();
             if (_parameterManager.Set("CurrentFinancialYear", ""))
-                MessageBox.Show("Accounting year closed.\n\nPlease restart SOLVE to avoid inconsistent behavior.");
+                MessageBox.Show("Accounting year closed.\n\nPlease restart SOLVE to avoid inconsistent behavior.", "SOLVE");
         }
 
         private bool hasOpenFinancialYear

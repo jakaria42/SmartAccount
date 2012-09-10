@@ -39,7 +39,7 @@ namespace BLL.ProjectManagement
 
         public IList<Head> GetCapitalHeads(Project project, bool isCashOrBankIncluded = true, bool bringInactive = true)
         {
-            IList<Head> heads = GetHeads(project, false, false);
+            IList<Head> heads = GetHeads(project, isCashOrBankIncluded, bringInactive);
             heads = heads.Where(h => h.HeadType == "Capital").ToList();
 
             return heads;

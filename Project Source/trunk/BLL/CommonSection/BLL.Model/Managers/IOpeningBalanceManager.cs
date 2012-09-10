@@ -16,6 +16,7 @@ namespace BLL.Model.Managers
         string GetLastFinancialYear();
         bool OpenNewAccountingYear(string year);
         bool CloseCurrentAccYear();
+        bool ImportBalancesFromLastYear();
         bool Set(Project project, Head head, double amount);
     }
 }

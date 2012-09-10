@@ -28,6 +28,7 @@ namespace CodeFirst
                 context.ProjectHeads.Add(new ProjectHead { Project = project, Head = _heads[1], IsActive = true });
             }
 
+            // TODO: Test projects and their heads. Remove these, when not needed.
             context.ProjectHeads.Add(new ProjectHead { Project = _projects[0], Head = _heads[4], IsActive = true });
             context.ProjectHeads.Add(new ProjectHead { Project = _projects[0], Head = _heads[5], IsActive = true });
             context.ProjectHeads.Add(new ProjectHead { Project = _projects[1], Head = _heads[4], IsActive = true });

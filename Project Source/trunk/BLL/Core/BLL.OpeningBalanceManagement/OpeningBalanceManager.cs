@@ -36,43 +36,41 @@ namespace BLL.OpeningBalanceManagement
             return _openingBalanceRepository.Get(r => r.ProjectHead.Project.ID == project.ID && r.FinancialYear == currentFinancialYear).ToList();
         }
 
+        // TODO: Refactor -- Code cloning with the overload below.
+        public double GetOpeningBalance(Project project, Head head)
+        {
+            if (!head.HeadType.Equals("Capital", StringComparison.OrdinalIgnoreCase))
+                return 0.0;
+
+            string currentFinancialYear = GetCurrentFinancialYear();
+            OpeningBalance openingBalance = _openingBalanceRepository.GetSingle(r => r.ProjectHead.Project.ID == project.ID
+                                                                                  && r.ProjectHead.Head.ID == head.ID
+                                                                                  && r.FinancialYear == currentFinancialYear && r.Description.Equals("opening", StringComparison.OrdinalIgnoreCase));
+
+            if (openingBalance == null)
+                return 0.0;
+            else
+                return openingBalance.Balance;
+        }
+
+        // This should be called with a capital type head name.
+        private double GetOpeningBalance(string projectName, string headName, string year)
+        {
+            OpeningBalance openingBalance = _openingBalanceRepository.GetSingle(r => r.ProjectHead.Project.Name == projectName
+                                                                                  && r.ProjectHead.Head.Name == headName
+                                                                                  && r.FinancialYear == year && r.Description.Equals("opening", StringComparison.OrdinalIgnoreCase));
+
+            if (openingBalance == null)
+                return 0.0;
+            else
+                return openingBalance.Balance;
+        }
+
         public SortedDictionary<string, double> GetAllClosingBalances(Project project)
         {
             string currentFinancialYear = GetCurrentFinancialYear();
             IList<Record> records = _recordRepository.Get(r => r.ProjectHead.Project.ID == project.ID && r.FinancialYear == currentFinancialYear).ToList();
             //records = records.Where(r => r.LedgerType.Equals("LedgerBook", StringComparison.OrdinalIgnoreCase)).ToList();
-
-            SortedDictionary<string, double> closingBalances = new SortedDictionary<string, double>();
-            foreach(Record record in records)
-            {
-                string headName;
-                if (record.LedgerType.Equals("CashBook", StringComparison.OrdinalIgnoreCase))
-                    headName = "Cash Book";
-                else if (record.LedgerType.Equals("BankBook", StringComparison.OrdinalIgnoreCase))
-                    headName = "Bank Book";
-                else
-                    headName = record.ProjectHead.Head.Name;
-
-                double balance = record.Debit - record.Credit;
-
-                double prevBalance;
-                if (closingBalances.TryGetValue(headName, out prevBalance))
-                {
-                    closingBalances.Remove(headName);
-                    balance += prevBalance;
-                }
-                closingBalances.Add(headName, balance);
-            }
-
-            return closingBalances;
-        }
-
-        public SortedDictionary<string, double> GetClosingBalancesForLastYear(Project project, string lastYear)
-        {
-            IList<Record> records = _recordRepository.Get(r => r.ProjectHead.Project.ID == project.ID && r.FinancialYear == lastYear).ToList();
-            records = records.Where(r => r.ProjectHead.Head.HeadType.Equals("Capital", StringComparison.OrdinalIgnoreCase)
-                                         || r.LedgerType.Equals("CashBook", StringComparison.OrdinalIgnoreCase)
-                                         || r.LedgerType.Equals("BankBook", StringComparison.OrdinalIgnoreCase)).ToList();
 
             SortedDictionary<string, double> closingBalances = new SortedDictionary<string, double>();
             foreach (Record record in records)
@@ -85,31 +83,62 @@ namespace BLL.OpeningBalanceManagement
                 else
                     headName = record.ProjectHead.Head.Name;
 
-                double balance = record.Debit - record.Credit;
-
-                double prevBalance;
-                if (closingBalances.TryGetValue(headName, out prevBalance))
+                double cumulativeBalance = record.Debit - record.Credit;
+                double currentBalance;
+                if (closingBalances.TryGetValue(headName, out currentBalance))
                 {
                     closingBalances.Remove(headName);
-                    balance += prevBalance;
+                    cumulativeBalance += currentBalance;
                 }
-                closingBalances.Add(headName, balance);
+                else
+                {
+                    double openingBalance = GetOpeningBalance(project.Name, headName, currentFinancialYear);
+                    cumulativeBalance = openingBalance + cumulativeBalance;
+                }
+
+                closingBalances.Add(headName, cumulativeBalance);
             }
 
             return closingBalances;
         }
 
-        public double GetOpeningBalance(Project project, Head head)
+        // TODO: Refactor -- Code cloning with the previous function.
+        public SortedDictionary<string, double> GetClosingBalancesForLastYear(Project project, string lastYear)
         {
-            string currentFinancialYear = GetCurrentFinancialYear();
-            OpeningBalance openingBalance = _openingBalanceRepository.GetSingle(r => r.ProjectHead.Project.ID == project.ID
-                                                                                  && r.ProjectHead.Head.ID == head.ID
-                                                                                  && r.FinancialYear == currentFinancialYear);
+            IList<Record> records = _recordRepository.Get(r => r.ProjectHead.Project.ID == project.ID && r.FinancialYear == lastYear).ToList();
+            records = records.Where(r => r.ProjectHead.Head.HeadType.Equals("Capital", StringComparison.OrdinalIgnoreCase)
+                /*|| r.LedgerType.Equals("CashBook", StringComparison.OrdinalIgnoreCase)
+                || r.LedgerType.Equals("BankBook", StringComparison.OrdinalIgnoreCase)*/).ToList();
 
-            if (openingBalance == null)
-                return 0.0;
-            else
-                return openingBalance.Balance;
+            SortedDictionary<string, double> closingBalances = new SortedDictionary<string, double>();
+            foreach (Record record in records)
+            {
+                string headName;
+                if (record.LedgerType.Equals("CashBook", StringComparison.OrdinalIgnoreCase))
+                    headName = "Cash Book";
+                else if (record.LedgerType.Equals("BankBook", StringComparison.OrdinalIgnoreCase))
+                    headName = "Bank Book";
+                else
+                    headName = record.ProjectHead.Head.Name;
+
+                double cumulativeBalance = record.Debit - record.Credit;
+
+                double currentBalance;
+                if (closingBalances.TryGetValue(headName, out currentBalance))
+                {
+                    closingBalances.Remove(headName);
+                    cumulativeBalance += currentBalance;
+                }
+                else
+                {
+                    double openingBalance = GetOpeningBalance(project.Name, headName, lastYear);
+                    cumulativeBalance = openingBalance + cumulativeBalance;
+                }
+
+                closingBalances.Add(headName, cumulativeBalance);
+            }
+
+            return closingBalances;
         }
 
         public string GetLastFinancialYear()
@@ -146,21 +175,85 @@ namespace BLL.OpeningBalanceManagement
         public bool CloseCurrentAccYear()
         {
             string currentFinancialYear = GetCurrentFinancialYear();
-            IList<OpeningBalance> allOpeningBalances = _openingBalanceRepository.GetAll().ToList();
-            allOpeningBalances = allOpeningBalances.Where(ob => ob.FinancialYear == currentFinancialYear && ob.Description.Equals("opening", StringComparison.OrdinalIgnoreCase)).ToList();
-            foreach (OpeningBalance openingBalance in allOpeningBalances)
+            IList<ProjectHead> allProjectHeads = _projectHeadRepository.GetAll().ToList();
+            //IList<Project> allProjects = (IList<Project>)_projectHeadRepository.GetAll().Distinct();
+            IList<string> processed = new List<string>();
+            foreach (ProjectHead projectHead in allProjectHeads)
             {
-                OpeningBalance closingBalance = new OpeningBalance
+                string projectName = projectHead.Project.Name;
+                if (processed.Contains(projectName))
+                    continue;
+
+                processed.Add(projectName);
+
+                if (projectHead.Head.HeadType.Equals("Capital", StringComparison.OrdinalIgnoreCase))
                 {
-                    Balance = openingBalance.Balance,
+                    SortedDictionary<string, double> closingBalances = GetAllClosingBalances(projectHead.Project);
+                    for (int i = 0; i < closingBalances.Count; i++)
+                    {
+                        string headName = closingBalances.Keys.ToArray()[i];
+                        ProjectHead actualProjectHead = _projectHeadRepository.GetSingle(ph => ph.Project.Name == projectName && ph.Head.Name == headName);
+                        OpeningBalance closingBalance = new OpeningBalance
+                        {
+                            Balance = closingBalances.Values.ToArray()[i],
+                            FinancialYear = currentFinancialYear,
+                            Date = DateTime.Today,
+                            IsActive = Convert.ToInt32(currentFinancialYear) < DateTime.Now.Year ? false : true,
+                            Description = "closing",
+                            ProjectHead = actualProjectHead
+                        };
+
+                        if (!InsertOrUpdateOpeningBalance(closingBalance, false))
+                            return false;
+                    }
+                }
+            }
+
+            //string currentFinancialYear = GetCurrentFinancialYear();
+            //IList<OpeningBalance> allOpeningBalances = _openingBalanceRepository.GetAll().ToList();
+            //allOpeningBalances = allOpeningBalances.Where(ob => ob.FinancialYear == currentFinancialYear && ob.Description.Equals("opening", StringComparison.OrdinalIgnoreCase)).ToList();
+            //foreach (OpeningBalance openingBalance in allOpeningBalances)
+            //{
+            //    // TODO: closing balance is wrong here. It should be calculated from records.
+            //    OpeningBalance closingBalance = new OpeningBalance
+            //    {
+            //        Balance = openingBalance.Balance,
+            //        FinancialYear = currentFinancialYear,
+            //        Date = DateTime.Today,
+            //        IsActive = Convert.ToInt32(currentFinancialYear) < DateTime.Now.Year ? false : true,
+            //        Description = "closing",
+            //        ProjectHead = openingBalance.ProjectHead
+            //    };
+
+            //    if (!InsertOrUpdateOpeningBalance(closingBalance, false))
+            //        return false;
+            //}
+
+            return true;
+        }
+
+        public bool ImportBalancesFromLastYear()
+        {
+            string currentFinancialYear = GetCurrentFinancialYear();
+            string lastAccYear = GetLastFinancialYear();
+            IList<OpeningBalance> allClosingBalances = _openingBalanceRepository.Get(ob => ob.FinancialYear == lastAccYear && ob.Description.Equals("closing", StringComparison.OrdinalIgnoreCase)).ToList();
+
+            if (allClosingBalances == null || allClosingBalances.Count == 0)
+                return false;
+
+            foreach (OpeningBalance closingBalance in allClosingBalances)
+            {
+                OpeningBalance openingBalance = new OpeningBalance
+                {
+                    Balance = closingBalance.Balance,
                     FinancialYear = currentFinancialYear,
                     Date = DateTime.Today,
                     IsActive = Convert.ToInt32(currentFinancialYear) < DateTime.Now.Year ? false : true,
-                    Description = "closing",
-                    ProjectHead = openingBalance.ProjectHead
+                    Description = "opening",
+                    ProjectHead = closingBalance.ProjectHead
                 };
 
-                if (!InsertOrUpdateOpeningBalance(closingBalance, false))
+                if (!InsertOrUpdateOpeningBalance(openingBalance, false))
                     return false;
             }
 

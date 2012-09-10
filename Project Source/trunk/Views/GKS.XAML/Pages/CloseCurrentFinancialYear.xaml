@@ -13,10 +13,11 @@
                   ItemsSource="{Binding Path=AllProjects, Mode=TwoWay}" SelectedItem="{Binding Path=SelectedProject, Mode=TwoWay}" DisplayMemberPath="Name"/>
 
         <DataGrid 
-            GridLinesVisibility="None"                  
-            IsTextSearchEnabled="True" 
-            AutoGenerateColumns="False"                                                  
-            IsSynchronizedWithCurrentItem="True" 
+            GridLinesVisibility="None"
+            IsReadOnly="True"
+            IsTextSearchEnabled="True"
+            AutoGenerateColumns="False"
+            IsSynchronizedWithCurrentItem="True"
             Background="Transparent"
             RowHeaderWidth="25"
             RowBackground="White"

@@ -69,7 +69,7 @@ namespace GKS.Model.ViewModels
             get
             {
                 if (SelectedProject == null) return new List<Head>();
-                return _headManager.GetCapitalHeads(SelectedProject);
+                return _headManager.GetCapitalHeads(SelectedProject, false, false);
             }
         }
 

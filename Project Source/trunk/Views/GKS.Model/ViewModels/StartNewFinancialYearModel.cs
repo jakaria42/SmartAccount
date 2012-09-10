@@ -189,7 +189,7 @@ namespace GKS.Model.ViewModels
                 return;
 
             if (_parameterManager.Set("CurrentFinancialYear", newFinancialYear))
-                MessageBox.Show("New accounting year opened for the year " + newFinancialYear + ".\n\nPlease restart SOLVE to avoid inconsistent behavior.");
+                MessageBox.Show("New accounting year opened for the year " + newFinancialYear + ".\n\nPlease restart SOLVE to avoid inconsistent behavior.", "SOLVE");
         }
 
         private bool hasOpenFinancialYear
@@ -214,6 +214,15 @@ namespace GKS.Model.ViewModels
                 ClosingBalancesGridItems = _openingBalanceManager.GetClosingBalancesForLastYear(SelectedProject, LastFinancialYear);
         }
 
+        private void ImportBalancesFromLastYear()
+        {
+            MessageBoxResult result = MessageBox.Show("All the existing opening balances for the current accounting year will be overwritten. Are you sure you wish to continue?", "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                _openingBalanceManager.ImportBalancesFromLastYear();
+            }
+        }
+
         private RelayCommand _openNewFinancialYearClicked;
         public ICommand OpenNewFinancialYearClicked
         {
@@ -229,7 +238,7 @@ namespace GKS.Model.ViewModels
         private RelayCommand _importToCurrrentYearClicked;
         public ICommand ImportToCurrrentYearClicked
         {
-            get { return _importToCurrrentYearClicked ?? (_importToCurrrentYearClicked = new RelayCommand(p1 => this.InvokeOnFinish(), p2 => hasOpenFinancialYear)); }
+            get { return _importToCurrrentYearClicked ?? (_importToCurrrentYearClicked = new RelayCommand(p1 => this.ImportBalancesFromLastYear(), p2 => hasOpenFinancialYear)); }
         }
     }
 

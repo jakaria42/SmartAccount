@@ -19,7 +19,8 @@
                 Command="{Binding Path=SaveButtonClicked}"/>
 
         <DataGrid 
-            GridLinesVisibility="None"                  
+            GridLinesVisibility="None"
+            IsReadOnly="True"
             IsTextSearchEnabled="True" 
             AutoGenerateColumns="False"                                                  
             IsSynchronizedWithCurrentItem="True" 
